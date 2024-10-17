@@ -1,0 +1,959 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Manage Event: {{ event.name }} - EvoCom</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+    <style>
+        .event-detail-section {
+            padding-bottom: 80px;
+        }
+
+        .event-header {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .event-content {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: -60px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .event-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .meta-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+        }
+
+        .event-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .pdf-btn {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .pdf-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .management-section {
+            margin-top: 30px;
+        }
+
+        .management-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            background-color: #f1f1f1;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab-button:hover {
+            background-color: #ddd;
+        }
+
+        .tab-button.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .participant-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .participant-table th,
+        .participant-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .participant-table th {
+            background-color: #f4f4f4;
+            font-weight: 600;
+        }
+
+        .participant-table tr:nth-child(even) {
+            background-color: #f1f1f1;
+        }
+
+        .payment-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        .payment-summary h4 {
+            margin-bottom: 10px;
+        }
+
+        .dataTables_wrapper {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        table.dataTable {
+            width: 100% !important;
+            margin-bottom: 20px !important;
+            border-collapse: collapse !important;
+        }
+
+        table.dataTable thead th {
+            background-color: #f4f4f4;
+            color: #333;
+            font-weight: 600;
+            padding: 12px 15px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        table.dataTable tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        table.dataTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dataTables_info,
+        .dataTables_paginate {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .dataTables_paginate .paginate_button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .dataTables_paginate .paginate_button.current {
+            background-color: #007bff;
+            color: white !important;
+            border-color: #007bff;
+        }
+
+        .dataTables_filter input,
+        .dataTables_length select {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 5px;
+            margin-left: 5px;
+        }
+
+        .payment-summary {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .payment-summary h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .payment-summary p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .update-metrics-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .update-metrics-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .update-metrics-btn:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .update-metrics-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .update-metrics-btn i {
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .update-metrics-btn.updating i {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Style for the attendance management tab */
+        #attendance-management .btn {
+            margin: 10px 0;
+        }
+
+        #attendance-management form {
+            margin-top: 20px;
+        }
+
+        #attendance-management .form-group {
+            margin-bottom: 15px;
+        }
+
+        #attendance-management label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #attendance-management .form-control-file {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #attendance-management .btn-success {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #attendance-management .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .volunteer-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .volunteer-actions button {
+            flex: 1;
+            white-space: nowrap;
+        }
+
+        #volunteerTable td {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ... (header remains the same) ... -->
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:member_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:member_index' %}">Home</a></li>
+                        <li><a href="{% url 'communities:show_communities' %}">Explore</a></li>
+                        <li><a href="{% url 'communities:joined_communities' %}">My Communities</a></li>
+                        <li><a href="{% url 'users:user_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a>
+                        </li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Event Detail Section Begin -->
+    <section class="event-detail-section">
+        <div class="event-header" style="background-image: url('{{ event.cover_image.url }}');"></div>
+        <div class="container">
+            <div class="event-content">
+                <h1 class="event-title">{{ event.name }}</h1>
+                <div class="event-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Start Date</div>
+                        <div class="meta-value">{{ event.start_datetime|date:"F d, Y, g:i a" }}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">End Date</div>
+                        <div class="meta-value">{{ event.end_datetime|date:"F d, Y, g:i a" }}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Registration Fee</div>
+                        <div class="meta-value">
+                            {% if event.registration_fee > 0 %}
+                            ₹{{ event.registration_fee|floatformat:2 }}
+                            {% else %}
+                            Free
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-actions">
+                    <h2>{{ event.name }} - Management</h2>
+                    <a href="{% url 'events:update_event' event.id %}" class="edit-btn">Edit Event Details</a>
+                    <a href="{% url 'events:download_participants_pdf' event.id %}" class="pdf-btn">Download
+                        Participants List as PDF</a>
+                </div>
+
+                <div class="management-section">
+                    <div class="management-tabs">
+                        <button class="tab-button active" onclick="openTab(event, 'manage-participants')">Manage
+                            Participants</button>
+                        <button class="tab-button" onclick="openTab(event, 'manage-volunteers')">Manage
+                            Volunteers</button>
+                        {% if event.registration_fee and event.registration_fee > 0 %}
+                        <button class="tab-button" onclick="openTab(event, 'payment-details')">Payment Details</button>
+                        {% endif %}
+                        <button class="tab-button" onclick="openTab(event, 'event-settings')">Event Settings</button>
+                        <button class="tab-button" onclick="openTab(event, 'attendance-management')">Attendance
+                            Management</button>
+                    </div>
+                    <form method="post" action="{% url 'events:check_attendance' event.id %}">
+                        {% csrf_token %}
+                        <div id="manage-participants" class="tab-content active">
+                            <h3>Manage Participants</h3>
+                            <div class="table-responsive">
+
+                                <table id="participant-table" class="display participant-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Full Name</th>
+                                            <th>Registration Date</th>
+                                            <th>Contact</th>
+                                            <th>Mobile No</th>
+                                            <th>Attendance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for participant in participants %}
+                                        <tr>
+                                            <td>{{ participant.user.first_name }} {{ participant.user.last_name }}</td>
+                                            <td>{{ participant.registration_date|date:"F d, Y, g:i a" }}</td>
+                                            <td>{{ participant.user.email }}</td>
+                                            <td>{{ participant.user.details.phone_number }}</td>
+                                            <td>
+                                                <input type="checkbox" name="attendance_{{ participant.id }}" 
+                                                       {% if participant.attended %}checked{% endif %}>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5">No participants registered yet.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Attendance</button>
+                    </form>
+                </div>
+                <div id="manage-volunteers" class="tab-content">
+                    <h3>Volunteer Management</h3>
+                    <table id="volunteerTable" class="display">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Current Task</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for volunteer in volunteers %}
+                            <tr>
+                                <td>{{ volunteer.user.get_full_name }}</td>
+                                <td>{{ volunteer.user.email }}</td>
+                                <td>{% if volunteer.approved %}Approved{% else %}Pending{% endif %}</td>
+                                <td>{{ volunteer.assigned_task|default:"Not assigned" }}</td>
+                                <td>
+                                    <div class="volunteer-actions">
+                                        <button class="btn btn-sm btn-primary assign-task" data-volunteer-id="{{ volunteer.id }}">Assign Task</button>
+                                        <button class="btn btn-sm btn-info email-volunteer" data-volunteer-email="{{ volunteer.user.email }}">Email</button>
+                                        <button class="btn btn-sm btn-danger remove-volunteer" data-volunteer-id="{{ volunteer.id }}">Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No volunteers registered for this event.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if event.registration_fee and event.registration_fee > 0 %}
+                <div id="payment-details" class="tab-content">
+                    <h3>Payment Details</h3>
+                    <div class="table-responsive">
+                        <table id="payment-table" class="display participant-table">
+                            <thead>
+                                <tr>
+                                    <th>Participant Name</th>
+                                    <th>Email</th>
+                                    <th>Payment Date</th>
+                                    <th>Amount Paid</th>
+                                    <th>Payment Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.event_registration.user.get_full_name }}</td>
+                                    <td>{{ payment.event_registration.user.email }}</td>
+                                    <td>{{ payment.payment_date|date:"F d, Y, g:i a" }}</td>
+                                    <td>₹{{ payment.amount|floatformat:2 }}</td>
+                                    <td>{{ payment.get_status_display }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5">No payments recorded yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="payment-summary">
+                        <h4>Payment Summary</h4>
+                        <p>Total Payments: {{ total_payments }}</p>
+                        <p>Total Amount Collected: ₹{{ total_amount|floatformat:2 }}</p>
+                    
+                    </div>
+                </div>
+                {% endif %}
+                <div id="event-settings" class="tab-content">
+                    <h3>Event Settings</h3>
+                    <div class="update-metrics-container">
+                        <button id="updateMetricsBtn" class="update-metrics-btn"
+                            onclick="updateMetrics({{ event.id }})">
+                            <i class="fas fa-sync-alt"></i> Update Event Metrics
+                        </button>
+                    </div>
+                    <!-- Add content for event settings -->
+                </div>
+
+                <div id="attendance-management" class="tab-content">
+                    <h3>Attendance Management</h3>
+                    <!-- Download attendance sheet -->
+                    <a href="{% url 'events:download_attendance_sheet' event.id %}" class="btn btn-primary">Download
+                        Attendance Sheet</a>
+
+                    <!-- Upload attendance sheet form -->
+                    <form method="post" enctype="multipart/form-data" class="mt-3">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="attendance_file">Upload Attendance Sheet:</label>
+                            <input type="file" name="attendance_file" id="attendance_file" accept=".xlsx" required
+                                class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-success">Upload and Process Attendance</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Event Detail Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text">
+                        <div class="ft-logo">
+                            <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100"
+                                    alt="EvoCom Logo"></a>
+                        </div>
+                        <div class="copyright-text">
+                            <p>&copy;
+                                <script>
+                                    document.write(new Date().getFullYear());
+                                </script> All rights reserved | <a href="#" target="blank">EvoCom</a>
+                            </p>
+                        </div>
+                        <div class="ft-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#participant-table').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search records",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columnDefs: [
+                    { targets: -1, className: 'dt-body-right' }  // Right-align the last column (usually for actions or status)
+                ],
+                initComplete: function () {
+                    this.api().columns().every(function () {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+            {% if event.registration_fee and event.registration_fee > 0 %}
+            $('#payment-table').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search records",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columnDefs: [
+                    { targets: -1, className: 'dt-body-right' }  // Right-align the last column (usually for actions or status)
+                ],
+                initComplete: function () {
+                    this.api().columns().every(function () {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+            {% endif %}
+        });
+
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+
+            // Adjust DataTables when tab is switched
+            if (tabName === 'payment-details' || tabName === 'manage-participants') {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            }
+        }
+
+        // Show the first tab content by default
+        document.getElementById("manage-participants").style.display = "block";
+    </script>
+
+
+
+    <script>
+        function updateMetrics(eventId) {
+            const button = document.getElementById('updateMetricsBtn');
+            button.classList.add('updating');
+            button.disabled = true;
+
+            fetch(`/events/update-metrics/${eventId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Event metrics updated successfully');
+                    } else {
+                        alert('Failed to update event metrics');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating event metrics');
+                })
+                .finally(() => {
+                    button.classList.remove('updating');
+                    button.disabled = false;
+                });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#volunteerTable').DataTable({
+                responsive: true,
+                columnDefs: [
+                    { orderable: false, targets: -1 }
+                ]
+            });
+
+            // Assign Task button click handler
+            $('.assign-task').click(function() {
+                var volunteerId = $(this).data('volunteer-id');
+                $('#volunteerIdInput').val(volunteerId);
+                $('#assignTaskModal').modal('show');
+            });
+
+            // Save Task button click handler
+            $('#saveTaskButton').click(function() {
+                var volunteerId = $('#volunteerIdInput').val();
+                var task = $('#taskInput').val();
+
+                $.ajax({
+                    url: '{% url "events:assign_task" event.id %}',
+                    type: 'POST',
+                    data: {
+                        'volunteer_id': volunteerId,
+                        'task': task,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('Task assigned successfully');
+                            location.reload();  // Reload the page to reflect changes
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX error:", status, error);
+                        alert('An error occurred while assigning the task');
+                    }
+                });
+
+                $('#assignTaskModal').modal('hide');
+            });
+
+            // Remove volunteer
+            $('.remove-volunteer').click(function () {
+                var volunteerId = $(this).data('volunteer-id');
+                var eventId = {{ event.id }};
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove them!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/events/event/${eventId}/remove-volunteer/${volunteerId}/`,
+                            type: 'POST',
+                            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Removed!', response.message, 'success').then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error!', response.message, 'error');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("AJAX error:", xhr.responseText);
+                                Swal.fire('Error!', 'An error occurred while removing the volunteer.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Open email modal
+            $('.email-volunteer').click(function () {
+                var volunteerEmail = $(this).data('volunteer-email');
+                $('#volunteerEmail').val(volunteerEmail);
+                $('#emailModal').modal('show');
+            });
+
+            // Send email
+            $('#sendEmailBtn').click(function () {
+                var email = $('#volunteerEmail').val();
+                var subject = $('#emailSubject').val();
+                var message = $('#emailMessage').val();
+
+                if (!subject || !message) {
+                    alert('Please provide both subject and message.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '{% url "events:email_volunteer" %}',
+                    type: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    data: JSON.stringify({
+                        email: email,
+                        subject: subject,
+                        message: message
+                    }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            alert('Email sent successfully!');
+                            $('#emailModal').modal('hide');
+                            $('#emailSubject').val('');
+                            $('#emailMessage').val('');
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while sending the email. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Add this just before the closing </body> tag -->
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="emailModalLabel">Send Email to Volunteer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="emailForm">
+                        <input type="hidden" id="volunteerEmail" name="volunteerEmail">
+                        <div class="form-group">
+                            <label for="emailSubject">Subject</label>
+                            <input type="text" class="form-control" id="emailSubject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailMessage">Message</label>
+                            <textarea class="form-control" id="emailMessage" rows="5" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="sendEmailBtn">Send Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="assignTaskModal" tabindex="-1" role="dialog" aria-labelledby="assignTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignTaskModalLabel">Assign Task to Volunteer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignTaskForm">
+                        {% csrf_token %}
+                        
+                        <input type="hidden" id="volunteerIdInput" name="volunteer_id">
+                        <div class="form-group">
+                            <label for="taskInput">Task:</label>
+                            <input type="text" class="form-control" id="taskInput" name="task" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskButton">Save Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

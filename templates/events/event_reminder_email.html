@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Event Reminder: {{ event.name }}</h2>
+    <p>Dear {{ user.first_name }},</p>
+    <p>This is a friendly reminder that you are registered for the upcoming event:</p>
+    <h3>{{ event.name }}</h3>
+    <p><strong>Date:</strong> {{ event.start_datetime|date:"F d, Y" }}</p>
+    <p><strong>Time:</strong> {{ event.start_datetime|time:"g:i A" }} - {{ event.end_datetime|time:"g:i A" }}</p>
+    <p><strong>Location:</strong> {{ event.address }}</p>
+    {% if event.location_description %}
+    <p><strong>Location Details:</strong> {{ event.location_description }}</p>
+    {% endif %}
+    <p>We look forward to seeing you at the event!</p>
+    <p>Best regards,<br>The EvoCom Team</p>
+</body>
+</html>

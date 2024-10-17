@@ -1,0 +1,90 @@
+<!-- templates/evocom_admin/tag_form.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% if tag %}Edit{% else %}Add{% endif %} Tag - EvoCom Admin</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <style>
+        section {
+            padding: 100px 0;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="EvoCom Logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li ><a href="{% url 'users:admin_index' %}">Dashboard</a></li>
+                        <li><a href="">Hi, {{ user.username }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+    <section>
+    <div class="container">
+        <h1>{% if tag %}Edit{% else %}Add{% endif %} Tag</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="tag_name">Tag Name:</label>
+                <input type="text" id="tag_name" name="tag_name" class="form-control" value="{{ tag.tag_name|default_if_none:'' }}">
+            </div>
+            <div class="form-group">
+                <label for="tag_description">Tag Description:</label>
+                <textarea id="tag_description" name="tag_description" class="form-control">{{tag.tag_description|default_if_none:'' }}</textarea>
+            </div>
+            <button type="submit" class="primary-btn btn">Save</button>
+        </form>
+    </div>
+</section>
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-text text-center">
+                <div class="ft-logo">
+                    <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100" alt="EvoCom Logo"></a>
+                </div>
+                <div class="copyright-text">
+                    <p>
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                        <a href="#" target="_blank">EvoCom</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

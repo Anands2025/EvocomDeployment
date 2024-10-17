@@ -1,0 +1,150 @@
+<!-- templates/evocom_admin/community_list.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Community List - EvoCom Admin</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css">
+    <style>
+        section {
+            padding: 100px 0;
+        }
+        .container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .action-btn {
+            margin-right: 5px;
+        }
+
+        /* DataTables specific styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+            margin-left: 2px;
+        }
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="EvoCom Logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li ><a href="{% url 'users:admin_index' %}">Dashboard</a></li>
+                        <li><a href="">Hi, {{ user.username }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="container">
+            <h1>Community List</h1>
+            <table id="communityTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cover Image</th>
+                        <th>Community Name</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for community in communities %}
+                    <tr>
+                        <td><img src="{{ community.cover.url }}" alt="Cover Image" width="100"></td>
+                        <td>{{ community.name }}</td>
+                        <td>{{ community.description }}</td>
+                        <td>{{ community.type }}</td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-sm action-btn">Edit</a>
+                            <a href="#" class="btn btn-danger btn-sm action-btn">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+    </section>
+    
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-text text-center">
+                <div class="ft-logo">
+                    <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100" alt="EvoCom Logo"></a>
+                </div>
+                <div class="copyright-text">
+                    <p>
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                        <a href="#" target="_blank">EvoCom</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $('#communityTable').DataTable({
+                "pageLength": 10,
+                "lengthChange": false,
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 4] }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

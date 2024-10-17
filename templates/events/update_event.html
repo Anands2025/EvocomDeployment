@@ -1,0 +1,337 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EvoCom - Update Event</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <style>
+        .create-event-section {
+            padding: 100px 0;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            font-size: 1.125rem;
+            color: #777;
+        }
+
+        .form-container {
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .form-container h3 {
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .form-group .btn {
+            background: #ff5722;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-group .btn:hover {
+            background: #e64a19;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloader -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:member_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:member_index' %}">Home</a></li>
+                        <li><a href="{% url 'events:event_management' event.community.id %}">Events</a></li>
+                        <li><a href="{% url 'communities:joined_communities' %}">My Communities</a></li>
+                        <li><a href="{% url 'users:user_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+   <!-- Update Event Section Begin -->
+<section class="create-event-section spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>Update Event</h2>
+                    <p>Update the details of the event</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="form-container">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="name">Event Name</label>
+                            <input type="text" id="name" name="name" value="{{ event.name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Event Description</label>
+                            <textarea id="description" name="description" required>{{ event.description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" required>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id == event.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="start_datetime">Start Date and Time</label>
+                            <input type="datetime-local" id="start_datetime" name="start_datetime" value="{{ event.start_datetime|date:'Y-m-d\TH:i' }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_datetime">End Date and Time</label>
+                            <input type="datetime-local" id="end_datetime" name="end_datetime" value="{{ event.end_datetime|date:'Y-m-d\TH:i' }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" id="address" name="address" value="{{ event.address }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" value="{{ event.location }}" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="location_description">Location Description</label>
+                            <textarea id="location_description" name="location_description" required>{{ event.location_description }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="get-location" class="btn btn-secondary">Use My Current Location</button>
+                        </div>
+                        <div id="map"></div>
+                        <input type="hidden" id="latitude" name="latitude" value="{{ event.latitude|default_if_none:'' }}">
+                        <input type="hidden" id="longitude" name="longitude" value="{{ event.longitude|default_if_none:'' }}">
+                        <div class="form-group">
+                            <label for="registration_fee">Registration Fee (in ₹)</label>
+                            <input type="number" id="registration_fee" name="registration_fee" min="0" step="0.01" value="{{ event.registration_fee }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cover_image">Cover Image</label>
+                            {% if event.cover_image %}
+                                <img src="{{ event.cover_image.url }}" alt="Current cover image" style="max-width: 200px; margin-bottom: 10px;">
+                                <p>Current cover image: {{ event.cover_image.name }}</p>
+                            {% else %}
+                                <p>No cover image currently set.</p>
+                            {% endif %}
+                            <input type="file" id="cover_image" name="cover_image" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn">Update Event</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Update Event Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text">
+                        <div class="ft-logo">
+                            <a href="{% url 'users:member_index' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+                        </div>
+                        <p>&copy; 2024 EvoCom. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        let map;
+        let marker;
+
+        function initMap() {
+            const eventLocation = { 
+                lat: {{ event.latitude|default:"0" }}, 
+                lng: {{ event.longitude|default:"0" }} 
+            };
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: eventLocation,
+                zoom: 15,
+            });
+
+            const input = document.getElementById("address");
+            const searchBox = new google.maps.places.SearchBox(input);
+
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+                if (places.length == 0) {
+                    return;
+                }
+                const place = places[0];
+                if (!place.geometry || !place.geometry.location) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                updateMarker(place.geometry.location);
+                map.setCenter(place.geometry.location);
+                map.setZoom(15);
+            });
+
+            map.addListener("click", (mapsMouseEvent) => {
+                updateMarker(mapsMouseEvent.latLng);
+                reverseGeocode(mapsMouseEvent.latLng);
+            });
+
+            // Set initial marker if event has location
+            if (eventLocation.lat !== 0 || eventLocation.lng !== 0) {
+                updateMarker(eventLocation);
+            }
+        }
+
+        function updateMarker(location) {
+            if (marker) {
+                marker.setMap(null);
+            }
+            marker = new google.maps.Marker({
+                position: location,
+                map: map,
+            });
+            document.getElementById("latitude").value = location.lat();
+            document.getElementById("longitude").value = location.lng();
+            document.getElementById("location").value = location.lat() + "," + location.lng();
+        }
+
+        function reverseGeocode(location) {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: location }, (results, status) => {
+                if (status === "OK") {
+                    if (results[0]) {
+                        document.getElementById("address").value = results[0].formatted_address;
+                    } else {
+                        console.log("No results found");
+                    }
+                } else {
+                    console.log("Geocoder failed due to: " + status);
+                }
+            });
+        }
+
+        document.getElementById("get-location").addEventListener("click", () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        map.setCenter(userLocation);
+                        map.setZoom(15);
+                        updateMarker(userLocation);
+                        reverseGeocode(userLocation);
+                    },
+                    () => {
+                        alert("Error: The Geolocation service failed.");
+                    }
+                );
+            } else {
+                alert("Error: Your browser doesn't support geolocation.");
+            }
+        });
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI&libraries=places,geocoding&callback=initMap"></script>
+</body>
+</html>

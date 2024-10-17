@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Community</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #FF4B2B, #FF416C);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .container h1 {
+            margin-bottom: 30px;
+            color: #FF416C;
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #FF416C;
+            box-shadow: 0 0 0 2px rgba(255, 65, 108, 0.2);
+        }
+        
+        .error-message {
+            color: #FF4B2B;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .create-account-btn {
+            background-color: #FF416C;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .create-account-btn:hover {
+            background-color: #FF4B2B;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+        }
+        
+        .create-account-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .cover-image-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .container h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Community</h1>
+        <form id="create-community-form" method="post" action="{% url 'communities:create_community' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="name">Community Name</label>
+                <input type="text" id="name" name="name" required>
+                <div class="error-message" id="name-error">Please enter the community name.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3" required></textarea>
+                <div class="error-message" id="description-error">Please enter a description.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="cover_image">Cover Image</label>
+                <input type="file" id="cover_image" name="cover" accept="image/*">
+                <img id="cover_image_preview" class="cover-image-preview" src="#" alt="Cover Image Preview" style="display:none;">
+            </div>
+            
+            <div class="form-group">
+                <label for="type">Community Type</label>
+                <select id="type" name="type" required>
+                    <option value="">Select type</option>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+                <div class="error-message" id="type-error">Please select a community type.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">Select category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="error-message" id="category-error">Please select a category.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="member_limit">Member Limit</label>
+                <select id="member_limit" name="member_limit" required>
+                    <option value="">Select member limit</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="250">250</option>
+                </select>
+                <div class="error-message" id="member-limit-error">Please select a member limit.</div>
+            </div>
+            
+            <button class="create-account-btn" id="submit-btn" type="submit" disabled>Create Community</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function checkFormValidity() {
+                var isValid = true;
+                $('.error-message').hide();
+
+                $('#create-community-form input, #create-community-form select, #create-community-form textarea').each(function() {
+                    var $input = $(this);
+                    var $error = $input.siblings('.error-message');
+
+                    if ($input.prop('required') && $input.val().trim() === '') {
+                        isValid = false;
+                        if ($input.data('touched')) {
+                            $error.show();
+                        }
+                    } else {
+                        $error.hide();
+                    }
+                });
+
+                $('#submit-btn').prop('disabled', !isValid);
+            }
+
+            $('#create-community-form input, #create-community-form select, #create-community-form textarea').on('input change', function() {
+                $(this).data('touched', true);
+                checkFormValidity();
+            });
+
+            $('#cover_image').on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#cover_image_preview').attr('src', e.target.result).show();
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#cover_image_preview').hide();
+                }
+            });
+
+            checkFormValidity();
+        });
+    </script>
+</body>
+</html>

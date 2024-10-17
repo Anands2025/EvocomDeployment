@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Manup Template">
+    <meta name="keywords" content="Manup, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EvoCom</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    
+    <!-- Add these new CSS files -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <!-- Add this custom CSS -->
+    <style>
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        .fade-in.appear {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li class="active"><a href="{% url 'users:index' %}">Home</a></li>
+                        <li><a href="#about-section">About</a></li>
+                        <li><a href="#contact-section">Contacts</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:login' %}" class="primary-btn top-btn">
+                    <span class="btn-text">Join EvoCom</span>
+                    <span class="btn-icon"><i class="fa fa-user-plus"></i></span>
+                </a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Hero Section Begin -->
+    <section class="hero-section set-bg animate__animated animate__fadeIn" data-setbg="{% static 'img/hero.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="hero-text">
+                        <span>Connect, Create, Celebrate</span>
+                        <h2>Your Community Events Made Simple</h2>
+                        <a href="{% url 'users:login' %}" class="primary-btn">Join Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <img src="{% static 'img/hero-right.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- Counter Section Begin -->
+    <section class="counter-section bg-gradient" data-aos="fade-up">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="counter-text">
+                        <span>Why worry now when you can</span>
+                        <h3>Count Every Second <br />Until the Event</h3>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="cd-timer" id="countdown">
+                        <div class="cd-item">
+                            <span>40</span>
+                            <p>Days</p>
+                        </div>
+                        <div class="cd-item">
+                            <span>18</span>
+                            <p>Hours</p>
+                        </div>
+                        <div class="cd-item">
+                            <span>46</span>
+                            <p>Minutes</p>
+                        </div>
+                        <div class="cd-item">
+                            <span>32</span>
+                            <p>Seconds</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Counter Section End -->
+
+    <!-- Home About Section Begin -->
+    <section class="home-about-section spad" id="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="ha-pic">
+                        <img src="{% static 'img/h-about.jpg' %}" alt="About EvoCom">
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="ha-text">
+                        <h2>About EvoCom</h2>
+                        <p>EvoCom is your ultimate community event management platform, designed to simplify the way you
+                            plan, organize, and manage events. Whether you're hosting a local gathering, a
+                            community-wide celebration, or a public event, EvoCom provides the tools you need to ensure
+                            success.</p>
+                        <ul>
+                            <li><span class="icon_check"></span> Seamless Event Creation and Management</li>
+                            <li><span class="icon_check"></span> Secure Online Registration and Payment Processing</li>
+                            <li><span class="icon_check"></span> Real-Time Notifications and Event Updates</li>
+                            <li><span class="icon_check"></span> Comprehensive Analytics and Reporting</li>
+                            <li><span class="icon_check"></span> Volunteer Coordination and Task Assignment</li>
+                        </ul>
+                        <a href="{% url 'users:login' %}" class="ha-btn">Discover Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Home About Section End -->
+    <!-- Features Section Begin -->
+    <section class="pricing-section set-bg spad" data-setbg="{% static 'img/pricing-bg.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>User Features</h2>
+                        <p>Explore the features tailored for different users</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-8" data-aos="flip-left" data-aos-delay="100">
+                    <div class="price-item">
+                        <h4>Community Members</h4>
+                        <ul>
+                            <li>Profile Management</li>
+                            <li>Event Discovery</li>
+                            <li>Event Registration</li>
+                            <li>Fee Management</li>
+                            <li>Notification Centre</li>
+                            <li>Event Reminders</li>
+                        </ul>
+                        <a href="{% url 'users:login' %}" class="price-btn">Join Now <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8" data-aos="flip-left" data-aos-delay="200">
+                    <div class="price-item top-rated">
+                        <h4>Event Organizers</h4>
+                        <ul>
+                            <li>Event Creation</li>
+                            <li>Attendee Management</li>
+                            <li>Fee Collection</li>
+                            <li>Volunteer Management</li>
+                            <li>Analytics Dashboard</li>
+                            <li>Customizable Email Templates</li>
+                        </ul>
+                        <a href="{% url 'users:login' %}" class="price-btn">Get Started <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8" data-aos="flip-left" data-aos-delay="300">
+                    <div class="price-item">
+                        <h4>Community Admins</h4>
+                        <ul>
+                            <li>Community Creation</li>
+                            <li>Community Event Management</li>
+                            <li>Member Management</li>
+                            <li>Fee Management</li>
+                            <li>Notification Centre</li>
+                            <li>Analytics Dashboard</li>
+                        </ul>
+                        <a href="{% url 'users:login' %}" class="price-btn">Manage Now <span class="arrow_right"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section End -->
+    <!-- Newslatter Section Begin -->
+    <section class="counter-section bg-gradient">
+        <div class="container">
+            <div class="newslatter-inner">
+                <div class="ni-text">
+                    <h3>Subscribe to Our Newsletter</h3>
+                    <p>Stay updated with our latest news and events</p>
+                </div>
+                <form action="#" class="ni-form">
+                    <input type="email" placeholder="Your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Newsletter Section End -->
+
+    <!-- Contact Section Begin -->
+    <section class="contact-section spad" id="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="section-title">
+                        <h2>Contact Us</h2>
+                        <p>Get in touch with us for any inquiries</p>
+                    </div>
+                    <div class="cs-text">
+                        <div class="ct-address">
+                            <span>Address:</span>
+                            <p>EvoCom Solutions, Kottayam, Kerala , India, 686572</p>
+                        </div>
+                        <ul>
+                            <li>
+                                <span>Phone:</span>
+                                (+91)-8547861240
+                            </li>
+                            <li>
+                                <span>Email:</span>
+                                <a style="color:black;" href="mailto:evocomindia@gmail.com?subject=Inquiry&body=Add what you want to inquire about" target="_blank">evocomindia@gmail.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="cs-map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3932.8586947398217!2d76.6010530745053!3d9.693099378241412!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b07d30000daf98d%3A0x300798406b0bbbc4!2sAiswarya%20House!5e0!3m2!1sen!2sin!4v1721726944410!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section End -->
+
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section fade-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text">
+                        <div class="ft-logo">
+                            <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100"
+                                    alt="EvoCom Logo"></a>
+                        </div>
+                        <div class="copyright-text">
+                            <p>
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                                <a href="#" target="_blank">EvoCom</a>
+                            </p>
+                        </div>
+                        <div class="ft-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <!--<script src="{% static 'js/jquery.countdown.min.js' %}"></script>-->
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Add these new JS files -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Fade-in effect for footer
+        const footer = document.querySelector('.fade-in');
+        const footerOptions = {
+            rootMargin: "0px 0px -100px 0px"
+        };
+        const footerObserver = new IntersectionObserver(function(entries, footerObserver) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('appear');
+                    footerObserver.unobserve(entry.target);
+                }
+            });
+        }, footerOptions);
+        footerObserver.observe(footer);
+    </script>
+</body>
+
+</html>

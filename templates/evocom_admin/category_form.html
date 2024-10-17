@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% if category %}Edit{% else %}Add{% endif %} Category - EvoCom Admin</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <style>
+        section{
+            padding: 100px 0;
+        }
+        .container {
+            margin-top: 30px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .primary-btn {
+            background-color: #ff4d4d;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .primary-btn:hover {
+            background-color: #e04343;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="EvoCom Logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li ><a href="{% url 'users:admin_index' %}">Dashboard</a></li>
+                        <li><a href="">Hi, {{ user.username }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+    <section>
+    <div class="container">
+        <h1>{% if category %}Edit{% else %}Add{% endif %} Category</h1>
+        
+        <div id="message-container" class="alert" style="display: none;"></div>
+        
+        <form id="category-form" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ category.name|default_if_none:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control">{{ category.description|default_if_none:'' }}</textarea>
+            </div>
+            <button type="submit" class="primary-btn btn">Save</button>
+        </form>
+    </div>
+    </section>
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-text text-center">
+                <div class="ft-logo">
+                    <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100" alt="EvoCom Logo"></a>
+                </div>
+                <div class="copyright-text">
+                    <p>
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                        <a href="#" target="_blank">EvoCom</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#category-form').on('submit', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: "{% url 'evocom_admin:category_add' %}",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    var messageContainer = $('#message-container');
+                    messageContainer.removeClass('alert-success alert-danger');
+                    
+                    if (response.status === 'success') {
+                        messageContainer.addClass('alert-success');
+                        $('#category-form')[0].reset();  // Clear the form on success
+                    } else {
+                        messageContainer.addClass('alert-danger');
+                    }
+                    
+                    messageContainer.text(response.message).show();
+                    
+                    // Hide the message after 5 seconds
+                    setTimeout(function() {
+                        messageContainer.hide();
+                    }, 5000);
+                },
+                error: function() {
+                    $('#message-container')
+                        .removeClass('alert-success')
+                        .addClass('alert-danger')
+                        .text('An error occurred. Please try again.')
+                        .show();
+                }
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

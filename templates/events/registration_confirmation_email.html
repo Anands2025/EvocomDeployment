@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333333;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #ff6666;
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 40px 30px;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+        }
+        .button {
+            background-color: #ff6666;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #ff4d4d;
+        }
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .highlight {
+            color: #ff6666;
+            font-weight: bold;
+        }
+        .map-container {
+            margin-top: 20px;
+        }
+        .map-image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://i.postimg.cc/rsNkRpbK/logo.png" alt="EvoCom Logo" class="logo">
+            <h1>Registration Confirmed</h1>
+        </div>
+        <div class="content">
+            <p>Dear <span class="highlight">{{ user.first_name }} {{ user.last_name }}</span>,</p>
+            <p>Thank you for registering for the event <strong>{{ event.name }}</strong>.</p>
+            <p>Event Details:</p>
+            <ul>
+                <li><strong>Date:</strong> {{ event.start_datetime|date:"F d, Y" }}</li>
+                <li><strong>Time:</strong> {{ event.start_datetime|time:"g:i a" }} - {{ event.end_datetime|time:"g:i a" }}</li>
+                <li><strong>Location:</strong> {{ event.location_description }}</li>
+            </ul>
+            <div class="map-container">
+                <h3>Event Location Map</h3>
+                <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.latitude }},{{ event.longitude }}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI" alt="Event Location Map" class="map-image">
+            </div>
+            <p>We look forward to seeing you at the event!</p>
+            <p>Best regards,<br>The EvoCom Team</p>
+            <a href="{{ event_url }}" class="button">View Event Details</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 EvoCom. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

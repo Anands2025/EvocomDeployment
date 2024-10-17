@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <link href="{% static 'css/accounts.css' %}" rel="stylesheet">
+    <style>
+        .error {
+            color: red;
+            font-size: 15px;
+        }
+
+        .k {
+            border-radius: 10%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var mod1 = 0;
+            var mod2 = 0;
+            var mod3 = 0;
+            var mod4 = 0;
+            var mod5 = 0;
+            var mod6 = 0;
+            $("#txt1").keyup(function () {
+                var n = document.getElementById("txt1");
+                var letter = /^[A-Za-z]+$/;
+                if (n.value == "") {
+                    document.getElementById("text1").innerHTML = "<span class='error'>Please enter a valid name</span>";
+                    mod1 = 1;
+                }
+                else if (!n.value.match(letter)) {
+                    document.getElementById("text1").innerHTML = "<span class='error'>This is not a valid name. Please try again</span>";
+                    mod1 = 1;
+                }
+                else if (n.value.match(letter)) {
+                    document.getElementById("text1").innerHTML = "<span class='error'></span>";
+                    mod1 = 0;
+                    $('#register').attr("disabled", false);
+                    $('#register').css("background", "blue");
+                }
+            }),
+                $("#txt2").keyup(function () {
+                    var n = document.getElementById("txt2");
+                    var letter = /^[A-Za-z]+$/;
+                    if (n.value == "") {
+                        mod2 = 1;
+                        document.getElementById("text2").innerHTML = "<span class='error'>Please enter a valid name</span>";
+                    }
+                    else if (!n.value.match(letter)) {
+                        document.getElementById("text2").innerHTML = "<span class='error'>This is not a valid name. Please try again</span>";
+                        mod2 = 1;
+                    }
+                    else if (n.value.match(letter)) {
+                        document.getElementById("text2").innerHTML = "<span class='error'></span>";
+                        mod2 = 0;
+                        $('#register').attr("disabled", false);
+                        $('#register').css("background", "blue");
+                    }
+                }),
+                $("#Email").keyup(function () {
+                    var n = document.getElementById("Email");
+                    p = /\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                    if (n.value == "") {
+                        document.getElementById("text3").innerHTML = "<span class='error'>Please enter a valid Email address</span>";
+                        mod3 = 1;
+                    }
+                    else if (!n.value.match(p)) {
+                        document.getElementById("text3").innerHTML = "<span class='error'>This is not a valid Email address. Please try again</span>";
+                        mod3 = 1;
+                    }
+                    else if (n.value.match(p)) {
+                        document.getElementById("text3").innerHTML = "<span class='error'></span>";
+                        mod3 = 0;
+                        $('#register').attr("disabled", false);
+                        $('#register').css("background", "blue");
+                    }
+                }),
+                $("#phone").keyup(function () {
+                    var n = document.getElementById("phone");
+                    p = /([789][0-9]{9})+$/;
+                    if (n.value == "") {
+                        document.getElementById("text4").innerHTML = "<span class='error'>Please enter a valid phone number</span>";
+                        mod4 = 1;
+                    }
+                    else if (!n.value.match(p)) {
+                        document.getElementById("text4").innerHTML = "<span class='error'>This is not a valid phone number. Please try again</span>";
+                        mod4 = 1;
+                    }
+                    else if (n.value.match(p)) {
+                        document.getElementById("text4").innerHTML = "<span class='error'></span>";
+                        mod4 = 0;
+                        $('#register').attr("disabled", false);
+                        $('#register').css("background", "blue");
+                    }
+                }),
+
+                $("#password").keyup(function () {
+                    var n6 = document.getElementById("password");
+                    var ps = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+                    if (n6.value == "") {
+                        document.getElementById("text5").innerHTML = "<span class='error'>Please enter a valid password</span>";
+                        mod5 = 1;
+
+                    }
+                    if (!n6.value.match(ps)) {
+                        document.getElementById("text5").innerHTML = "<span class='error'>This is not a valid Password.contains 1 special character ,1 Alphabet must</span>";
+                        mod5 = 1;
+                    }
+                    else if (n6.value.match(ps)) {
+                        document.getElementById("text5").innerHTML = "<span class='error'></span>";
+                        mod5 = 0;
+                        $('#register').attr("disabled", false);
+                        $('#register').css("background", "blue");
+
+                    }
+                }),
+                $("#cpassword").keyup(function () {
+                    var n7 = document.getElementById("password");
+                    var n8 = document.getElementById("cpassword");
+                    if (n8.value == "") {
+                        document.getElementById("text6").innerHTML = "<span class='error'>Please enter a valid password</span>";
+                        mod6 = 1;
+
+                    }
+                    if (n7.value == n8.value) {
+
+                        document.getElementById("text6").innerHTML = "<span class='error'></span>";
+                        mod6 = 0;
+                        $('#register').attr("disabled", false);
+                        $('#register').css("background", "blue");
+
+                    }
+                    else {
+                        document.getElementById("text6").innerHTML = "<span class='error'> Password Missmatch</span>";
+                        mod6 = 1;
+
+                    }
+                }),
+                $("#register").click(function () {
+                    if (mod1 == 1 || mod2 == 1 || mod3 == 1 || mod4 == 1 || mod5 == 1 || mod6 == 1) {
+                        $('#register').attr("disabled", true);
+                        $('#register').css("background", "lightblue");
+                    }
+                })
+
+
+        });
+        function fileValidation() {
+            var fileInput =
+                document.getElementById('inputfileupload');
+
+            var filePath = fileInput.value;
+
+            // Allowing file type
+            var allowedExtensions =
+                /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+
+                document.getElementById("text17").innerHTML = "<span class='error'>invalid file type</span>";
+                fileInput.value = '';
+                return false;
+            }
+            else {
+                document.getElementById("text17").innerHTML = "<span class='error'></span>";
+            }
+        }
+
+    </script>
+    <meta charset="utf-8">
+
+    <title>edit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-4 pb-5">
+                <!-- Account Sidebar-->
+                <div class="author-card pb-3">
+                    <div class="author-card-cover" style="background-image:  url('{% static " images/logo.jpg" %}');">
+                    </div>
+                    <div class="author-card-profile">
+                        <div class="author-card-avatar">
+
+                            <img src="{% static customer.photo %}" alt="Customer Photo" class="k">
+
+
+                        </div>
+
+                        <div class="author-card-details">
+                            <h5 class="author-card-name text-lg">{{ customer.first_name }} {{ customer.last_name }}</h5>
+                            <span class="author-card-position">Joined on<br>20-06-2024</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="wizard">
+                    <nav class="list-group list-group-flush">
+                        <a class="list-group-item active " href="{% url 'useraccount' %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><i class="fe-icon-shopping-bag mr-1 text-muted"></i>
+                                    <div class="d-inline-block font-weight-medium text-uppercase">over view</div>
+                                </div><span class="badge badge-secondary">1</span>
+                            </div>
+                        </a><a class="list-group-item" href="{% url 'editaccount' %}"><i
+                                class="fe-icon-user text-muted"></i>edit Profile Settings</a>
+
+
+                        <a class="list-group-item" href="{% url 'updatepassword' %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><i class="fe-icon-shopping-bag mr-1 text-muted"></i>
+                                    <div class="d-inline-block font-weight-medium text-uppercase">Change Password</div>
+                                </div><span class="badge badge-secondary">1</span>
+                            </div>
+                            <a class="list-group-item " href="{% url 'deactiveaccountuser' %}"><i
+                                    class="fe-icon-map-pin text-muted"></i>Deactivate account</a>
+
+                            <a class="list-group-item" href="{% url 'userloginhome' %}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><i class="fe-icon-tag mr-1 text-muted"></i>
+                                        <div class="d-inline-block font-weight-medium text-uppercase">Home page</div>
+                                    </div><span class="badge badge-secondary"></span>
+                                </div>
+                            </a>
+                    </nav>
+                </div>
+            </div>
+            <!-- Profile Settings-->
+            {% csrf_token %}
+            <div class="col-lg-8 pb-5">
+                <form class="row" action="" method="POST" enctype="multipart/form-data">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-fn">First Name</label>
+
+                            <input class="form-control" type="text" id="txt1" name="first"
+                                value="{{ customer.first_name }}" required="" disabled>
+                            <span id="text1"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-ln">Last Name</label>
+                            <input class="form-control" type="text" id="txt2" name="last"
+                                value="{{ customer.last_name }}" required="" disabled>
+                            <span id="text2"></span></td>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-email">E-mail Address</label>
+                            <input class="form-control" type="email" id="Email" name="email"
+                                value="{{ customer.email }}" disabled>
+                            <span id="text3"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-phone">Phone Number</label>
+                            <input class="form-control" type="text" id="phone" name="phone"
+                                value="{{ customer.phone1 }}" required="" disabled>
+                            <span id="text4"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-phone">upload image</label>
+                            <input class="form-control" type="file" id="inputfileupload" name="file"
+                                onchange="fileValidation()" value="" title=" dsf" disabled>
+                            <span id="text17"></span></td>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="account-phone">Gender</label>
+                            <br><input type="radio" disabled {% if customer.gender=='male' %} checked {% endif %}
+                                name="gender" value="male"> Male
+                            <input type="radio" disabled {% if customer.gender=='female' %} checked {% endif %}
+                                name="gender" value="female"> Female<br>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="account-pass">New Password</label>
+                        <input class="form-control" type="password" name="pass"id="password"value="{{ customer.password }}"disabled>
+                        <span id="text5"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="account-confirm-pass">Confirm Password</label>
+                        <input class="form-control" type="password" name="cpass" id="cpassword"value="{{ customer.password }}"disabled>
+                        <span id="text6"></span>
+                    </div>
+                </div> -->
+
+                    <div class="col-12">
+                        <hr class="mt-2 mb-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="custom-control custom-checkbox d-block">
+                                <input class="custom-control-input" type="checkbox" id="subscribe_me" checked="">
+                                <a href="{% url 'userloginhome' %}" class="btn btn-style-1 btn-primary">Back</a>
+                            </div>
+                            <a href="{% url 'editaccount' %}" class="btn btn-style-1 btn-primary">Edit</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    </script>
+</body>
+
+</html>

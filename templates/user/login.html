@@ -1,0 +1,530 @@
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Manup Template">
+    <meta name="keywords" content="Manup, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EvoCom</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        h1 {
+            font-weight: bold;
+            margin: 0;
+            font-size: 40px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        p {
+            font-size: 14px;
+            font-weight: 100;
+            line-height: 20px;
+            letter-spacing: 0.5px;
+            margin: 20px 0 30px;
+        }
+
+        span {
+            font-size: 12px;
+        }
+
+        a {
+            color: #333;
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+        }
+
+        button {
+            border-radius: 20px;
+            border: 1px solid #FF4B2B;
+            background-color: #FF4B2B;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: transform 80ms ease-in;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button.ghost {
+            background-color: transparent;
+            border-color: #FFFFFF;
+        }
+
+        form {
+            background-color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 0px;
+            height: 100%;
+            text-align: center;
+        }
+
+        input {
+            background-color: #eee;
+            border: none;
+            padding: 8px 6px;
+            margin: 8px 0;
+            width: 100%;
+            font-size: smaller;
+            border-radius: 5px;
+        }
+
+        .containers {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+                0 10px 10px rgba(0, 0, 0, 0.22);
+            position: relative;
+            overflow: hidden;
+            width: 768px;
+            max-width: 100%;
+            min-height: 480px;
+        }
+
+        .form-containers {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+
+        }
+
+        .sign-in-containers {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .containers.right-panel-active .sign-in-containers {
+            transform: translateX(100%);
+        }
+
+        .sign-up-containers {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .containers.right-panel-active .sign-up-containers {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+
+            0%,
+            49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+
+            50%,
+            100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        .overlay-containers {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+
+        }
+
+        .containers.right-panel-active .overlay-containers {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: #FF416C;
+            background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+            background: linear-gradient(to right, #FF4B2B, #FF416C);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 0;
+            color: #FFFFFF;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .containers.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+            color: #FFFFFF;
+
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .containers.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .containers.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        .social-containers {
+            margin: 20px 0;
+        }
+
+        .social-containers a {
+            border: 1px solid #DDDDDD;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            height: 40px;
+            width: 40px;
+        }
+
+        .error-message {
+            color: #FF4B2B;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-containers {
+            padding: 0 30px;
+            /* Reduced padding */
+        }
+
+        .containers {
+            min-height: 580px;
+            /* Increased minimum height */
+        }
+
+        input {
+            margin: 4px 0;
+            /* Reduced margin */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:index' %}">Home</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <section class="home-about-section spad" id="about-section">
+        <div class="container" style="width: 768px;">
+            <div class="containers" id="containers">
+                <div class="form-containers sign-up-containers">
+                    <form id="signup-form" method="post" action="{% url 'users:register' %}">
+                        {% csrf_token %}
+                        <h1>Create Account</h1>
+                        <div class="social-containers">
+                            <a href="{% provider_login_url 'google' %}" class="social"><i class="fa fa-google"></i></a>
+                        </div>
+                        <span>or use your email for registration</span>
+                        <input type="email" id="signup-email" name="email" placeholder="Email" required />
+                        <div class="error-message" id="email-error"></div>
+                        <input type="text" id="signup-username" name="username" placeholder="Username" required />
+                        <div class="error-message" id="username-error"></div>
+                        <input type="password" id="signup-password1" name="password1" placeholder="Password" required />
+                        <div class="error-message" id="password1-error"></div>
+                        <input type="password" id="signup-password2" name="password2" placeholder="Confirm Password"
+                            required />
+                        <div class="error-message" id="password2-error"></div>
+                        <button type="submit" class="primary-btn">Sign Up</button>
+                    </form>
+                </div>
+                <div class="form-containers sign-in-containers">
+                    <form id="signin-form" method="post" action="{% url 'users:loginfn' %}">
+                        {% csrf_token %}
+                        <h1>Sign in</h1>
+                        <div class="social-containers">
+                            <a href="{% provider_login_url 'google' %}" class="social"><i class="fa fa-google"></i></a>
+                        </div>
+                        <span>or use your account</span>
+                        <input type="email" id="signin-email" name="email" placeholder="Email id" required />
+                        <input type="password" id="signin-password" name="password" placeholder="Password" required />
+                        <a href="{% url 'users:password_reset_request' %}">Forgot your password?</a>
+                        <button type="submit" class="primary-btn">Sign In</button>
+                        {% if error %}
+                        <p style="color:red">{{ error }}</p>
+                        {% endif %}
+                    </form>
+                </div>
+                <div class="overlay-containers">
+                    <div class="overlay">
+                        <div class="overlay-panel overlay-left">
+                            <h1 style="color: #FFFFFF;">Welcome Back!</h1>
+                            <p style="color: #FFFFFF;">To keep connected with us please login with your personal info
+                            </p>
+                            <button class="ghost" id="signIn">Sign In</button>
+                        </div>
+                        <div class="overlay-panel overlay-right">
+                            <h1 style="color: #FFFFFF;">Hello, Friend!</h1>
+                            <p style="color: #FFFFFF;">Enter your personal details and start journey with us</p>
+                            <button class="ghost" id="signUp">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text">
+                        <div class="ft-logo">
+                            <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100"
+                                    alt="EvoCom Logo"></a>
+                        </div>
+                        <div class="copyright-text">
+                            <p>
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                                <a href="#" target="_blank">EvoCom</a>
+                            </p>
+                        </div>
+                        <div class="ft-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <!--<script src="{% static 'js/jquery.countdown.min.js' %}"></script>-->
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/login.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            var emailTimer, usernameTimer;
+
+            // Email validation
+            $('#signup-email').on('input', function() {
+                clearTimeout(emailTimer);
+                var email = $(this).val();
+                var $emailError = $('#email-error');
+
+                if (email) {
+                    if (isValidEmail(email)) {
+                        emailTimer = setTimeout(function() {
+                            $.ajax({
+                                url: "{% url 'users:check_email' %}",
+                                type: "POST",
+                                data: {
+                                    'email': email,
+                                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                                },
+                                success: function(response) {
+                                    if (response.exists) {
+                                        $emailError.text('This email is already registered.').show();
+                                    } else {
+                                        $emailError.hide();
+                                    }
+                                },
+                                error: function() {
+                                    $emailError.text('An error occurred. Please try again.').show();
+                                }
+                            });
+                        }, 500);  // Wait for 500ms after the user stops typing
+                    } else {
+                        $emailError.text('Please enter a valid email address.').show();
+                    }
+                } else {
+                    $emailError.text('Email is required.').show();
+                }
+            });
+
+            // Username validation
+            $('#signup-username').on('input', function() {
+                clearTimeout(usernameTimer);
+                var username = $(this).val();
+                var $usernameError = $('#username-error');
+
+                if (username) {
+                    if (username.length >= 3) {
+                        usernameTimer = setTimeout(function() {
+                            $.ajax({
+                                url: "{% url 'users:check_username' %}",
+                                type: "POST",
+                                data: {
+                                    'username': username,
+                                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                                },
+                                success: function(response) {
+                                    if (response.exists) {
+                                        $usernameError.text('This username is already taken.').show();
+                                    } else {
+                                        $usernameError.hide();
+                                    }
+                                },
+                                error: function() {
+                                    $usernameError.text('An error occurred. Please try again.').show();
+                                }
+                            });
+                        }, 500);  // Wait for 500ms after the user stops typing
+                    } else {
+                        $usernameError.text('Username must be at least 3 characters long.').show();
+                    }
+                } else {
+                    $usernameError.text('Username is required.').show();
+                }
+            });
+
+            // Prevent form submission if there are errors
+            $('#signup-form').submit(function(e) {
+                if ($('#email-error').is(':visible') || $('#username-error').is(':visible')) {
+                    e.preventDefault();
+                    alert('Please correct the errors in the form.');
+                }
+            });
+
+            // Helper function to validate email format
+            function isValidEmail(email) {
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+
+        // Add this script to your login.html file or in a separate JS file
+        $('#signup-form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Redirect to login page or show success message
+                        window.location.href = "{% url 'users:login' %}";
+                    }
+                },
+                error: function(xhr) {
+                    var error = JSON.parse(xhr.responseText);
+                    if (error.error.includes('username')) {
+                        $('#username-error').text(error.error).show();
+                    } else if (error.error.includes('email')) {
+                        $('#email-error').text(error.error).show();
+                    } else {
+                        // Show general error message
+                        alert(error.error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

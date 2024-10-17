@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>EvoCom - Events</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <style>
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .event-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-details {
+            padding: 20px;
+        }
+
+        .event-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .event-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .event-actions {
+            margin-top: 15px;
+        }
+
+        .manage-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .manage-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloader -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:member_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:member_index' %}">Home</a></li>
+                        <li><a href="{% url 'communities:show_communities' %}">Explore</a></li>
+                        <li><a href="{% url 'communities:joined_communities' %}">My Communities</a></li>
+                        <li><a href="{% url 'users:user_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Event List Section Begin -->
+    <section class="event-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>Events</h2>
+                        <p>Manage your community events</p>
+                    </div>
+                </div>
+            </div>
+            <div class="event-grid">
+                {% for event in events %}
+                <div class="event-card">
+                    <div class="event-image">
+                        {% if event.cover_image %}
+                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                        {% else %}
+                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                        {% endif %}
+                    </div>
+                    <div class="event-details">
+                        <div class="event-name">{{ event.name }}</div>
+                        <div class="event-info">{{ event.start_datetime|date:"M d, Y H:i" }}</div>
+                        <div class="event-info">{{ event.location }}</div>
+                        <div class="event-info">{% if event.registration_fee > 0 %}₹{{ event.registration_fee|floatformat:2 }}{% else %}Free{% endif %}</div>
+                        <div class="event-actions">
+                            <a href="{% url 'events:event_detail_manage' event.id %}" class="manage-btn">Manage Event</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No events found for this community.</p>
+                {% endfor %}
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                    <a href="{% url 'events:create_event' community.id %}" class="primary-btn">Create New Event</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Event List Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text">
+                        <div class="ft-logo">
+                            <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100"
+                                    alt="EvoCom Logo"></a>
+                        </div>
+                        <div class="copyright-text">
+                            <p>&copy; <script>
+                                    document.write(new Date().getFullYear());
+                                </script> All rights reserved | <a href="#"
+                                    target="_blank">EvoCom</a></p>
+                        </div>
+                        <div class="ft-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#eventTable').DataTable({
+                "pageLength": 10,
+                "lengthChange": false,
+                "columnDefs": [
+                    { "orderable": false, "targets": [7] }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>

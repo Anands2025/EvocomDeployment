@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice - {{ event.name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f0f0f0;
+            padding: 0;
+        }
+        .container {
+            width: 210mm;
+            height: auto;  
+            padding: 10mm;
+            margin: 5% auto;0
+            background-color: white;
+            box-sizing: border-box;
+            page-break-after: avoid;  
+            
+        .header {
+            background-color: #1a3668;
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .invoice-details > div {
+            flex: 1 1 30%;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #1a3668;
+            color: white;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f2f2f2;
+        }
+        .event-details {
+            margin-top: 30px;
+        }
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-text {
+            order: 1;
+        }
+        .logo {
+            order: 2;
+            max-width: 200px;
+            height: auto;
+            margin-left: 20px;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: white;
+            }
+            .container {
+                width: 210mm;
+                height: auto;  // Changed from min-height: 297mm
+                margin: 0;
+                padding: 10mm;
+                box-shadow: none;
+                page-break-after: avoid;  // Added to prevent unnecessary page breaks
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container" id="invoice-container">
+        
+        <div class="header">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>INVOICE</h1>
+                    <p>NO: {{ payment.order_id }}</p>
+                </div>
+                <div class="header-logo">
+                    <img src="/static/img/logo.png" alt="{{ website_name }} Logo" class="logo">
+                </div>
+            </div>
+        </div>
+        
+        <div class="invoice-details">
+            <div>
+                <h3>Bill To:</h3>
+                <p>{{ user.get_full_name }}</p>
+                <p>{{ user.email }}</p>
+            </div>
+            <div>
+                <h3>From:</h3>
+                <p>{{ website_name }}</p>
+                <p>{{ website_url }}</p>
+            </div>
+            <div>
+                <p><strong>Date:</strong> {{ payment.payment_date|date:"F d, Y" }}</p>
+                <p><strong>Payment Status:</strong> {{ payment.get_status_display }}</p>
+            </div>
+        </div>
+        
+        <table>
+            <tr>
+                <th>Description</th>  
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>Registration fee for {{ event.name }}</td>
+                <td>1</td>
+                <td>₹{{ payment.amount }}</td>
+                <td>₹{{ payment.amount }}</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3">Total</td>
+                <td>₹{{ payment.amount }}</td>
+            </tr>
+        </table>
+        
+        <div class="event-details">
+            <h3>Event Details</h3>
+            <p><strong>Event Name:</strong> {{ event.name }}</p>
+            <p><strong>Date:</strong> {{ event.start_datetime|date:"F d, Y, g:i a" }} to {{ event.end_datetime|date:"F d, Y, g:i a" }}</p>
+            <p><strong>Location:</strong> {{ event.address }}</p>
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            generatePDF();
+        });
+
+        function generatePDF() {
+            const element = document.getElementById('invoice-container');
+            const opt = {
+                margin: 0,
+                filename: 'invoice.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save();
+        }
+    </script>
+</body>
+</html>

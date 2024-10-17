@@ -1,0 +1,363 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>User Profile - EvoCom</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <style>
+        .profile-sidebar {
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .profile-usertitle {
+            margin-bottom: 20px;
+        }
+
+        .profile-usertitle-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .profile-usertitle-job {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .profile-usermenu {
+            margin-bottom: 20px;
+        }
+
+        .profile-usermenu .nav {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .profile-usermenu .nav li {
+            margin-bottom: 10px;
+        }
+
+        .profile-usermenu .nav li div {
+            width:200px;
+        }
+        .profile-usermenu .nav li a {
+            display: flex;
+            align-items: center;
+            color: #343a40;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .profile-usermenu .nav li a i {
+            margin-right: 10px;
+        }
+
+        .profile-usermenu .nav li a:hover {
+            background-color: #ff4d4d;
+            color: #fff;
+        }
+
+        .profile-usermenu .nav li.active a {
+            color: #fff;
+        }
+
+        .profile-usermenu .nav li.active div {
+            background-color: #ff4d4d;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloader -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:community_admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li ><a href="{% url 'users:community_admin_index' %}">Home</a></li>
+                        <li><a href="{% url 'communities:community_management' %}">Manage Community</a></li>
+                        <li class="active"><a href="{% url 'users:community_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- User Profile Section Begin -->
+    <section class="profile-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="profile-sidebar">
+                        <div class="profile-usertitle">
+                            <div class="profile-usertitle-name">
+                                {{ user.first_name }} {{ user.last_name }}
+                            </div>
+                            <div class="profile-usertitle-job">
+                                {{ user.details.role }}
+                            </div>
+                        </div>
+                        <div class="profile-usermenu">
+                            <ul class="nav">
+                                <li class="active">
+                                    <div>
+                                        <a href="#">
+                                            <i class="fa fa-home"></i>
+                                            Overview </a>
+                                    </div>
+                                </li>
+                                {% if not user.is_google_user %}
+                                <li>
+                                    <div>
+                                        <a href="{% url 'users:community_password_change' %}">
+                                            <i class="fa fa-user"></i>
+                                            Change Password </a>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                <li>
+                                    <div>
+                                        <a href="#">
+                                            <i class="fa fa-envelope"></i>
+                                            Messages </a>
+                                    </div>  
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="profile-content">
+                        <h3>Profile Information</h3>
+                        <form id="profile-form" method="post" action="{% url 'users:community_update_profile' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="username">Username:</label>
+                                    <input type="text" id="username" name="username" class="form-control"
+                                        value="{{ request.user.username }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" class="form-control"
+                                        value="{{ request.user.email }}" readonly>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name">First Name:</label>
+                                    <input type="text" id="first_name" name="first_name" class="form-control"
+                                        value="{{ request.user.first_name }}">
+                                    <div class="error-message" id="first-name-error"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name">Last Name:</label>
+                                    <input type="text" id="last_name" name="last_name" class="form-control"
+                                        value="{{ request.user.last_name }}">
+                                    <div class="error-message" id="last-name-error"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone_number">Phone Number:</label>
+                                    <input type="text" id="phone_number" name="phone_number" class="form-control"
+                                        value="{{ request.user.details.phone_number }}">
+                                    <div class="error-message" id="phone-error"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="place">Place:</label>
+                                    <input type="text" id="place" name="place" class="form-control"
+                                        value="{{ request.user.details.place }}">
+                                    <div class="error-message" id="place-error"></div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label for="address">Address:</label>
+                                    <textarea id="address" name="address"
+                                        class="form-control">{{ request.user.details.address }}</textarea>
+                                    <div class="error-message" id="address-error"></div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="primary-btn btn">Update Profile</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- User Profile Section End -->
+
+    <!-- Footer Section Begin -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-text text-center">
+                        <div class="ft-logo">
+                            <a href="#" class="footer-logo"><img src="{% static 'img/footer-logo.png' %}" height="100"
+                                    alt="EvoCom Logo"></a>
+                        </div>
+                        <div class="copyright-text">
+                            <p>
+                                Copyright &copy;
+                                <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                                <a href="#" target="_blank">EvoCom</a>
+                            </p>
+                        </div>
+                        <div class="ft-social">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-linkedin"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+    $(document).ready(function() {
+        var phoneTimer;
+
+        // Phone number validation
+        $('#phone_number').on('input', function() {
+            clearTimeout(phoneTimer);
+            var phone = $(this).val();
+            var $phoneError = $('#phone-error');
+
+            phoneTimer = setTimeout(function() {
+                if (phone) {
+                    if (isValidIndianPhone(phone)) {
+                        $phoneError.hide();
+                    } else {
+                        $phoneError.text('Please enter a valid 10-digit phone number.').show();
+                    }
+                } else {
+                    $phoneError.text('Phone number is required.').show();
+                }
+            }, 500);
+        });
+
+        // First name validation
+        $('#first_name').on('input', function() {
+            var firstName = $(this).val();
+            var $firstNameError = $('#first-name-error');
+
+            if (firstName) {
+                if (firstName.length < 2) {
+                    $firstNameError.text('First name must be at least 2 characters long.').show();
+                } else {
+                    $firstNameError.hide();
+                }
+            } else {
+                $firstNameError.text('First name is required.').show();
+            }
+        });
+
+        // Last name validation
+        $('#last_name').on('input', function() {
+            var lastName = $(this).val();
+            var $lastNameError = $('#last-name-error');
+
+            if (lastName) {
+                if (lastName.length < 1) {
+                    $lastNameError.text('Last name must be at least 1 characters long.').show();
+                } else {
+                    $lastNameError.hide();
+                }
+            } else {
+                $lastNameError.text('Last name is required.').show();
+            }
+        });
+
+        // Place validation
+        $('#place').on('input', function() {
+            var place = $(this).val();
+            var $placeError = $('#place-error');
+
+            if (place) {
+                if (place.length < 2) {
+                    $placeError.text('Place must be at least 2 characters long.').show();
+                } else {
+                    $placeError.hide();
+                }
+            } else {
+                $placeError.text('Place is required.').show();
+            }
+        });
+
+        // Address validation
+        $('#address').on('input', function() {
+            var address = $(this).val();
+            var $addressError = $('#address-error');
+
+            if (address) {
+                if (address.length < 10) {
+                    $addressError.text('Address must be at least 10 characters long.').show();
+                } else {
+                    $addressError.hide();
+                }
+            } else {
+                $addressError.text('Address is required.').show();
+            }
+        });
+
+        // Prevent form submission if there are errors
+        $('#profile-form').submit(function(e) {
+            if ($('.error-message:visible').length > 0) {
+                e.preventDefault();
+                alert('Please correct the errors in the form.');
+            }
+        });
+
+        // Helper function to validate Indian phone number
+        function isValidIndianPhone(phone) {
+            var phoneRegex = /^[6-9]\d{9}$/;
+            return phoneRegex.test(phone);
+        }
+    });
+    </script>
+</body>
+
+</html>

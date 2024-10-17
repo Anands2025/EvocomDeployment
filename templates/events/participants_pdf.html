@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Participants List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Participants List for {{ event.name }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Registration Date</th>
+                <th>Contact</th>
+                <th>Mobile No</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr>
+                <td>{{ participant.user.first_name }} {{ participant.user.last_name }}</td>
+                <td>{{ participant.registration_date|date:"F d, Y, g:i a" }}</td>
+                <td>{{ participant.user.email }}</td>
+                <td>{{ participant.user.details.phone_number }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No participants registered yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
