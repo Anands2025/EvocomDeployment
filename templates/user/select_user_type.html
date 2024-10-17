@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select User Type</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #FF4B2B, #FF416C);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .main-container h2 {
+            margin-bottom: 30px;
+            color: #FF416C;
+            font-size: 36px;
+            font-weight: 600;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .radio-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .custom-radio input {
+            display: none;
+        }
+        
+        .radio-btn {
+            width: 320px;
+            height: 420px;
+            border: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            border-radius: 15px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            overflow: hidden;
+        }
+        
+        .radio-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .radio-btn > i {
+            color: #FFFFFF;
+            background-color: #FF416C;
+            font-size: 24px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 50%;
+            padding: 10px;
+            transition: 0.5s;
+            opacity: 0;
+        }
+        
+        .radio-btn img {
+            width: 120px;
+            height: 120px;
+            margin: 30px 0 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .radio-btn:hover img {
+            transform: scale(1.1);
+        }
+        
+        .radio-btn h3 {
+            color: #FF416C;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .radio-btn p {
+            color: #666;
+            font-size: 14px;
+            padding: 0 20px;
+            line-height: 1.5;
+        }
+        
+        .custom-radio input:checked + .radio-btn {
+            border: 3px solid #FF416C;
+            transform: scale(1.05);
+        }
+        
+        .custom-radio input:checked + .radio-btn > i {
+            opacity: 1;
+        }
+        
+        .create-account-btn {
+            background-color: #FF416C;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 40px;
+            display: block;
+            width: 220px;
+            margin-left: auto;
+            margin-right: auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .create-account-btn:hover {
+            background-color: #FF4B2B;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+        }
+        
+        .role-features {
+            margin-top: 20px;
+            text-align: left;
+            padding: 0 20px;
+        }
+        
+        .role-features li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+        
+        .role-features i {
+            color: #FF416C;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <form method="post" action="{% url 'users:select_user_type' %}">
+            {% csrf_token %}
+            <h2>Choose Your Role</h2>
+            <div class="radio-buttons">
+                <label class="custom-radio">
+                    <input type="radio" name="role" value="member" checked>
+                    <span class="radio-btn">
+                        <i class="fas fa-check"></i>
+                        <img src="{% static 'img/member.png' %}" alt="member img">
+                        <h3>Community Member</h3>
+                        <p>Explore and engage in vibrant communities</p>
+                        <ul class="role-features">
+                            <li><i class="fas fa-users"></i> Join multiple communities</li>
+                            <li><i class="fas fa-calendar-alt"></i> Participate in events</li>
+                            <li><i class="fas fa-comments"></i> Engage in discussions</li>
+                            <li><i class="fas fa-star"></i> Rate and review communities</li>
+                            <li><i class="fas fa-handshake"></i> Network with like-minded individuals</li>
+                        </ul>
+                    </span>
+                </label>
+
+                <label class="custom-radio">
+                    <input type="radio" name="role" value="community_admin">
+                    <span class="radio-btn">
+                        <i class="fas fa-check"></i>
+                        <img src="{% static 'img/community_admin.png' %}" alt="community admin img">
+                        <h3>Community Admin</h3>
+                        <p>Create and manage your own community</p>
+                        <ul class="role-features">
+                            <li><i class="fas fa-plus-circle"></i> Create custom communities</li>
+                            <li><i class="fas fa-cog"></i> Manage community settings</li>
+                            <li><i class="fas fa-user-plus"></i> Invite and manage members</li>
+                            <li><i class="fas fa-chart-line"></i> Access analytics and insights</li>
+                            <li><i class="fas fa-bullhorn"></i> Organize community events</li>
+                        </ul>
+                    </span>
+                </label>
+            </div>
+            <button type="submit" class="create-account-btn">Continue</button>
+        </form>
+    </div>
+</body>
+</html>
