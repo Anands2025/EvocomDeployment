@@ -94,11 +94,14 @@ WSGI_APPLICATION = 'evocom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'evocom',
-        'USER': 'evocom',
-        'PASSWORD': 'evocom',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'evocom_touchspite',
+        'USER': 'evocom_touchspite',
+        'PASSWORD': '7af19c3edd3937f5c6051bda1a18cbd899393ab5',  # Replace with your actual password
+        'HOST': 'fx71u.h.filess.io',
+        'PORT': '3305',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
@@ -197,4 +200,3 @@ STRIPE_SECRET_KEY = 'sk_test_51Pt9v92NqMToBdgAl36iHFblsffGVdmwO7Vu9crgAV2yFYLtEl
 
 RAZORPAY_KEY_ID = 'rzp_test_1vZK3GexmGW5zt'
 RAZORPAY_KEY_SECRET = 'eIKYygydEQ5iicHT2N6gaVuC'
-
