@@ -256,7 +256,7 @@ def complete_profile(request):
 
         user.save()
         user_details.save()
-        messages.success(request, 'Profile completed successfully!')
+        
         
         if user_details.role == "member":
             return redirect('users:member_index')
@@ -355,7 +355,6 @@ def update_profile(request):
 
         user.save()
         user_details.save()
-        messages.success(request, 'Profile updated successfully!')
         return redirect('users:user_profile')
 
     context = {
