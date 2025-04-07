@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from evocom import settings
+from evocom import settings 
 from .models import EventOrganizerRequest, EventOrganizers, PasswordResetToken, User, UserDetails
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -34,7 +34,13 @@ def admin_index(request):
 @login_required
 @nocache
 def community_admin_index(request):
-    return render(request, 'user/community_admin_index.html')
+    # Get the community where the user is admin
+    try:
+        community = Community.objects.get(admin=request.user)
+        return render(request, 'user/community_admin_index.html', {'community': community})
+    except Community.DoesNotExist:
+        messages.error(request, "You are not an admin of any community.")
+        return redirect('users:index')
 @login_required
 @nocache
 def member_index(request):
@@ -119,8 +125,7 @@ def register_view(request):
     try:
         user = User.objects.create_user(username=username, email=email, password=password1)
         UserDetails.objects.create(user=user)
-        send_welcome_email(user)  # Send welcome email
-        messages.success(request, 'User registered successfully!')  # Add success message
+        send_welcome_email(user)  # Send welcome email # Add success message
         return JsonResponse({'success': 'User registered successfully', 'redirect_url': '/'})  # Redirect to home or intended page
 
     except IntegrityError as e:

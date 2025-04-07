@@ -43,6 +43,8 @@
                     <ul>
                         <li class="active"><a href="{% url 'users:community_admin_index' %}">Home</a></li>
                         <li><a href="{% url 'communities:community_management' %}">Manage Community</a></li>
+                        <li><a href="{% url 'communities:community_statistics' community.id %}">Statistics</a></li>
+                        <li><a href="{% url 'communities:community_events_list' community.id %}">Events List</a></li>
                         <li><a href="{% url 'users:community_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
                     </ul>
                 </nav>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             background-color: #f8f8f8;
             color: #333333;
         }
+
         .container {
             width: 100%;
             max-width: 600px;
@@ -20,21 +22,25 @@
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             background-color: #ff6666;
             color: #ffffff;
             padding: 30px 20px;
             text-align: center;
         }
+
         .logo {
             width: 120px;
             height: auto;
             margin-bottom: 15px;
         }
+
         .content {
             padding: 40px 30px;
             line-height: 1.6;
         }
+
         .footer {
             background-color: #f0f0f0;
             padding: 20px;
@@ -42,6 +48,7 @@
             color: #666666;
             font-size: 14px;
         }
+
         .button {
             background-color: #ff6666;
             color: white;
@@ -54,30 +61,50 @@
             margin-top: 20px;
             transition: background-color 0.3s ease;
         }
+
         .button:hover {
             background-color: #ff4d4d;
         }
+
         h1 {
             margin: 0;
             font-size: 28px;
             font-weight: bold;
         }
+
         ul {
             padding-left: 20px;
         }
+
         .highlight {
             color: #ff6666;
             font-weight: bold;
         }
+
         .map-container {
             margin-top: 20px;
         }
+
         .map-image {
             max-width: 100%;
             height: auto;
         }
+
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .button {
+            background: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -90,13 +117,21 @@
             <p>Event Details:</p>
             <ul>
                 <li><strong>Date:</strong> {{ event.start_datetime|date:"F d, Y" }}</li>
-                <li><strong>Time:</strong> {{ event.start_datetime|time:"g:i a" }} - {{ event.end_datetime|time:"g:i a" }}</li>
+                <li><strong>Time:</strong> {{ event.start_datetime|time:"g:i a" }} - {{ event.end_datetime|time:"g:i a"
+                    }}</li>
                 <li><strong>Location:</strong> {{ event.location_description }}</li>
             </ul>
             <div class="map-container">
                 <h3>Event Location Map</h3>
-                <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.latitude }},{{ event.longitude }}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI" alt="Event Location Map" class="map-image">
+                <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ event.latitude }},{{ event.longitude }}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C{{ event.latitude }},{{ event.longitude }}&key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI"
+                    alt="Event Location Map" class="map-image">
             </div>
+            {% if qr_code_url %}
+            <div class="qr-code">
+                <p>Your QR Code Ticket:</p>
+                <img src="{{ qr_code_url }}" alt="QR Code Ticket" style="max-width: 200px;">
+            </div>
+            {% endif %}
             <p>We look forward to seeing you at the event!</p>
             <p>Best regards,<br>The EvoCom Team</p>
             <a href="{{ event_url }}" class="button">View Event Details</a>
@@ -106,4 +141,5 @@
         </div>
     </div>
 </body>
+
 </html>

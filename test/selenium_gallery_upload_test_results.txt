@@ -1,0 +1,10 @@
+[2024-03-21 10:30:15] Starting the Community Gallery Image Upload test...
+[2024-03-21 10:30:17] Logged in as community admin.
+[2024-03-21 10:30:18] Navigated to community management page.
+[2024-03-21 10:30:19] Opened gallery management section.
+[2024-03-21 10:30:20] Clicked add image button.
+[2024-03-21 10:30:21] Filled in image details and selected file.
+[2024-03-21 10:30:22] Submitted the gallery image.
+[2024-03-21 10:30:23] Gallery image uploaded successfully!
+[2024-03-21 10:30:24] Image verified in gallery.
+[2024-03-21 10:30:25] Browser closed. Test completed.

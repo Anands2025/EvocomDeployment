@@ -61,3 +61,15 @@ class EventOrganizerRequest(models.Model):
         return f"{self.member.username} - {self.community.name} - {self.status}"
 
 
+from django_otp.plugins.otp_totp.models import TOTPDevice
+
+class UserTwoFactor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='two_factor')
+    is_enabled = models.BooleanField(default=False)
+    backup_codes = models.JSONField(default=list)
+    
+    def generate_backup_codes(self):
+        codes = [get_random_string(8) for _ in range(5)]
+        self.backup_codes = codes
+        self.save()
+        return codes

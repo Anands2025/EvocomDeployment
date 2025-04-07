@@ -1,0 +1,81 @@
+<div class="chat-sidebar">
+    <div class="chat-rooms">
+        <h3>Chat Rooms</h3>
+        {% for room in chat_rooms %}
+        <div class="chat-room {% if room.id == current_room.id %}active{% endif %}" data-room-id="{{ room.id }}">
+            <div class="chat-room-info">
+                <div class="chat-avatar">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="chat-room-details">
+                    <h4>{% if request.user == room.admin %}{{ room.organizer.username }}{% else %}{{ room.admin.username }}{% endif %}</h4>
+                    <p class="community-name">{{ room.community.name }}</p>
+                    {% if room.unread_count > 0 %}
+                    <span class="unread-badge">{{ room.unread_count }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="chat-main">
+    <div class="chat-header">
+        {% if current_room %}
+            {% if is_admin %}
+                <h3>Chat with {{ current_room.organizer.get_full_name }}</h3>
+                <p>Event Organizer - {{ current_room.community.name }}</p>
+            {% else %}
+                <h3>Chat with {{ current_room.admin.get_full_name }}</h3>
+                <p>Community Admin - {{ current_room.community.name }}</p>
+            {% endif %}
+        {% else %}
+            <h3>{% if is_admin %}No Event Organizers{% else %}Select a Community{% endif %}</h3>
+        {% endif %}
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}" data-id="{{ message.id }}">
+            {% if message.file %}
+            <div class="file-attachment">
+                <a href="{{ message.file.url }}" target="_blank">
+                    <i class="fa fa-file"></i> {{ message.file_name }}
+                </a>
+            </div>
+            {% endif %}
+            <p>{{ message.message }}</p>
+            <div class="message-info">
+                <span class="message-time">{{ message.timestamp|date:"g:i A" }}</span>
+                {% if message.sender == request.user %}
+                <span class="message-status {{ message.status }}">
+                    <i class="fa fa-{% if message.status == 'read' %}check-double{% else %}check{% endif %}"></i>
+                    {% if message.status == 'read' and message.read_time %}
+                    <span class="read-time">Seen {{ message.read_time|date:"g:i A" }}</span>
+                    {% endif %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="chat-input">
+        <form id="chat-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" id="message-input" placeholder="Type a message..." required>
+                <button type="button" id="emoji-button" class="emoji-button">😊</button>
+                <label for="file-input" class="file-label">
+                    <i class="fa fa-paperclip"></i>
+                </label>
+                <input type="file" id="file-input" style="display: none;">
+                <button type="submit" class="send-btn">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+            <div id="file-preview" class="file-preview"></div>
+        </form>
+    </div>
+</div>

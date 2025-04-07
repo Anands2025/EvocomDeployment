@@ -1,0 +1,14 @@
+[2024-09-07 10:30:45] Starting the Volunteer Sign-up test...
+[2024-09-07 10:30:46] Browser window maximized.
+[2024-09-07 10:30:47] Navigated to the login page.
+[2024-09-07 10:30:47] Email input field is visible.
+[2024-09-07 10:30:48] Entered email: sarinrajesh2025@mca.ajce.in
+[2024-09-07 10:30:48] Entered password: ********
+[2024-09-07 10:30:49] Clicked the login button.
+[2024-09-07 10:30:50] Login successful!
+[2024-09-07 10:30:51] Navigated to the events page.
+[2024-09-07 10:30:52] Clicked on event: Community Cleanup Drive
+[2024-09-07 10:30:53] Clicked volunteer sign-up button.
+[2024-09-07 10:30:54] Submitted volunteer form.
+[2024-09-07 10:30:55] Successfully signed up as a volunteer!
+[2024-09-07 10:30:56] Browser closed. Test completed.

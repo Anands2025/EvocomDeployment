@@ -1,4 +1,5 @@
 {% load static %}
+{% load event_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -226,8 +227,43 @@
                         <input type="hidden" id="latitude" name="latitude">
                         <input type="hidden" id="longitude" name="longitude">
                         <div class="form-group">
-                            <label for="registration_fee">Registration Fee (in ₹)</label>
-                            <input type="number" id="registration_fee" name="registration_fee" min="0" step="0.01" value="0" required>
+                            <label for="base_price">Base Price (₹)</label>
+                            <input type="number" class="form-control" id="base_price" name="base_price" min="0" step="0.01" value="0" required>
+                            <small class="form-text text-muted">Base registration fee for the event</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="dynamic_pricing_enabled">Enable Dynamic Pricing</label>
+                            <input type="checkbox" id="dynamic_pricing_enabled" name="dynamic_pricing_enabled">
+                            <small class="form-text text-muted">Enable price adjustments based on demand</small>
+                        </div>
+
+                        <div class="dynamic-pricing-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="min_price">Minimum Price (₹)</label>
+                                <input type="number" class="form-control" id="min_price" name="min_price" min="0" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="max_price">Maximum Price (₹)</label>
+                                <input type="number" class="form-control" id="max_price" name="max_price" min="0" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="price_increment_percentage">Price Adjustment Percentage</label>
+                                <input type="number" class="form-control" id="price_increment_percentage" name="price_increment_percentage" 
+                                       value="10" min="0" max="100" step="0.01">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="max_attendees">Maximum Attendees</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="max_attendees" 
+                                   name="max_attendees" 
+                                   min="1" 
+                                   value="50" 
+                                   required>
+                            <small class="form-text text-muted">Maximum number of participants that can register for this event</small>
                         </div>
                         <div class="form-group">
                             <label for="cover_image">Cover Image</label>
@@ -439,6 +475,27 @@
             
             // Initial prediction when the page loads
             updatePrediction();
+        });
+
+        document.getElementById('dynamic_pricing_enabled').addEventListener('change', function() {
+            const dynamicPricingFields = document.querySelector('.dynamic-pricing-fields');
+            const basePrice = document.getElementById('base_price').value;
+            
+            dynamicPricingFields.style.display = this.checked ? 'block' : 'none';
+            
+            if (this.checked) {
+                // Set default values based on base price
+                document.getElementById('min_price').value = basePrice;
+                document.getElementById('max_price').value = basePrice * 2;
+            }
+        });
+
+        document.getElementById('base_price').addEventListener('change', function() {
+            if (document.getElementById('dynamic_pricing_enabled').checked) {
+                // Update min/max prices when base price changes
+                document.getElementById('min_price').value = this.value;
+                document.getElementById('max_price').value = this.value * 2;
+            }
         });
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI&libraries=places&callback=initMap" async defer></script>

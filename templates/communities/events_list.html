@@ -1,0 +1,387 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Community Events - EvoCom</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <style>
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .event-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.1);
+        }
+
+        .event-details {
+            padding: 20px;
+        }
+
+        .event-details h5 {
+            color: #333;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .event-details p {
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-details i {
+            color: #ff5722;
+            width: 20px;
+            text-align: center;
+        }
+
+        .event-details .primary-btn {
+            background-color: #ff5722;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 16px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .primary-btn:hover {
+            background-color: #f44336;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge i {
+            color: #fff;
+        }
+
+        .badge-success { background-color: #28a745; }
+        .badge-primary { background-color: #007bff; }
+        .badge-secondary { background-color: #6c757d; }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .modal-header {
+            background-color: #ff5722;
+            color: white;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .event-detail {
+            margin-bottom: 10px;
+        }
+
+        .event-detail strong {
+            color: #ff5722;
+            min-width: 100px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:community_admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:community_admin_index' %}">Home</a></li>
+                        <li><a href="{% url 'communities:community_management' %}">Manage Community</a></li>
+                        <li><a href="{% url 'communities:community_statistics' community.id %}">Statistics</a></li>
+                        <li class="active"><a href="{% url 'communities:community_events_list' community.id %}">Events List</a></li>
+                        <li><a href="{% url 'users:community_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Event List Section Begin -->
+    <section class="event-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>{{ community.name }} Events</h2>
+                        <p>Manage and monitor all your community events</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ongoing Events -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="text-success mb-4"><i class="fa fa-play-circle"></i> Ongoing Events</h3>
+                    {% if ongoing_events %}
+                        <div class="event-grid">
+                            {% for event in ongoing_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-clock"></i> Ends: {{ event.end_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-map-marker"></i> {{ event.location }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No ongoing events.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <h3 class="text-primary mb-4"><i class="fa fa-calendar"></i> Upcoming Events</h3>
+                    {% if upcoming_events %}
+                        <div class="event-grid">
+                            {% for event in upcoming_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-calendar"></i> Starts: {{ event.start_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-map-marker"></i> {{ event.location }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No upcoming events.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Completed Events -->
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <h3 class="text-secondary mb-4"><i class="fa fa-check-circle"></i> Completed Events</h3>
+                    {% if completed_events %}
+                        <div class="event-grid">
+                            {% for event in completed_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-calendar-check"></i> Ended: {{ event.end_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Total Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-rupee-sign"></i> Revenue: ₹{{ event.revenue }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No completed events.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Event List Section End -->
+
+    <!-- Event Details Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="eventImage" src="" alt="Event Image" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="eventTitle" class="mb-3"></h4>
+                            <div class="event-detail"><strong>Start:</strong> <span id="eventStart"></span></div>
+                            <div class="event-detail"><strong>End:</strong> <span id="eventEnd"></span></div>
+                            <div class="event-detail"><strong>Location:</strong> <span id="eventLocation"></span></div>
+                            <div class="event-detail"><strong>Registrations:</strong> <span id="eventRegistrations"></span></div>
+                            <div class="event-detail"><strong>Fee:</strong> <span id="eventFee"></span></div>
+                            <div class="event-detail mt-3">
+                                <strong>Description:</strong>
+                                <p id="eventDescription" class="mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+    function showEventDetails(eventId) {
+        $.ajax({
+            url: "{% url 'events:event_detail_api' 0 %}".replace('0', eventId),
+            type: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(event) {
+                $('#eventTitle').text(event.name);
+                $('#eventStart').text(moment(event.start_datetime).format('MMMM D, YYYY, h:mm A'));
+                $('#eventEnd').text(moment(event.end_datetime).format('MMMM D, YYYY, h:mm A'));
+                $('#eventLocation').text(event.location);
+                $('#eventRegistrations').text(event.registration_count);
+                $('#eventFee').text(event.registration_fee > 0 ? `₹${event.registration_fee}` : 'Free');
+                $('#eventDescription').text(event.description);
+                $('#eventImage').attr('src', event.cover_image || "{% static 'img/default-event-cover.jpg' %}");
+                
+                $('#eventModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching event details:', error);
+                alert('Failed to load event details. Please try again.');
+            }
+        });
+    }
+
+    // Remove the countdown function call from main.js
+    $(document).ready(function() {
+        if (typeof mainInit === 'function') {
+            const originalMainInit = mainInit;
+            mainInit = function() {
+                const result = originalMainInit.apply(this, arguments);
+                // Prevent countdown initialization
+                return result;
+            };
+        }
+    });
+    </script>
+</body>
+</html> 

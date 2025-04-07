@@ -1,0 +1,10 @@
+[2024-09-06 14:22:41] Starting the Selenium test...
+[2024-09-06 14:22:41] Browser window maximized.
+[2024-09-06 14:22:42] Navigated to the login page.
+[2024-09-06 14:22:42] Email input field is visible.
+[2024-09-06 14:22:42] Entered email: sarinrajesh2025@mca.ajce.in
+[2024-09-06 14:22:42] Entered password: ********
+[2024-09-06 14:22:44] Clicked the login button.
+[2024-09-06 14:22:44] Page URL changed after login attempt.
+[2024-09-06 14:22:44] Login successful!
+[2024-09-06 14:22:49] Browser closed. Test completed.

@@ -1,4 +1,6 @@
 {% load static %}
+{% load youtube_filters %}
+{% load event_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,15 +38,16 @@
 
         .event-content-wrapper {
             position: relative;
-            margin-top: -60px;
+            z-index: 2;
+            width: 100%;
+            overflow: hidden;
         }
 
         .event-content {
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 30px;
-            position: relative;
         }
 
         .event-title {
@@ -163,6 +166,384 @@
             background-color: #6c757d;
             color: white;
         }
+
+        .stream-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stream-section h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .stream-section h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #f13a11;
+        }
+
+        .stream-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .stream-waiting {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stream-waiting h3 {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .stream-waiting p {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .live-stream video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 5px;
+        }
+
+        .event-gallery {
+            padding: 40px 0;
+        }
+
+        .event-gallery h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .gallery-item {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gallery-item-info {
+            padding: 15px;
+        }
+
+        .gallery-item-info h4 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .gallery-item-info p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .gallery-popup-close {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            border: none;
+            font-size: 24px;
+            transition: background-color 0.3s;
+        }
+
+        .gallery-popup-close:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .counter-section {
+            padding: 30px 0;
+            background: linear-gradient(to right, #ff5722, #ff7043);
+            color: white;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .counter-text {
+            margin-bottom: 30px;
+        }
+
+        .counter-text span {
+            font-size: 16px;
+            color: #ffffff;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .counter-text h3 {
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 6px;
+        }
+
+        .cd-timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .cd-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+        }
+
+        .cd-item span {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .cd-item p {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+            .event-title {
+                font-size: 1.8rem;
+            }
+
+            .event-content {
+                padding: 20px;
+                margin-top: -30px;
+            }
+
+            .event-meta {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .meta-item {
+                min-width: 100%;
+            }
+
+            .event-description {
+                font-size: 1rem;
+            }
+
+            .stream-section {
+                margin: 20px 0;
+                padding: 15px;
+            }
+
+            .stream-section h2 {
+                font-size: 22px;
+            }
+
+            #map {
+                height: 300px;
+            }
+
+            .ticket-section {
+                flex-direction: column;
+            }
+
+            .ticket-section img {
+                margin-bottom: 15px;
+            }
+
+            .ticket-section .btn {
+                width: 100%;
+                margin-bottom: 10px;
+                margin-left: 0 !important;
+            }
+
+            .event-header {
+                padding-top: 75%; /* Adjust aspect ratio for mobile */
+            }
+
+            .stream-container {
+                margin-top: 10px;
+            }
+
+            .stream-waiting {
+                padding: 30px 15px;
+            }
+
+            .stream-waiting h3 {
+                font-size: 20px;
+            }
+
+            .stream-waiting p {
+                font-size: 14px;
+            }
+
+            /* Make buttons stack on mobile */
+            .event-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .event-actions .primary-btn,
+            .event-actions .secondary-btn {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            /* Adjust registration status for mobile */
+            .registration-status {
+                text-align: center;
+                margin-top: 15px;
+                font-size: 14px;
+            }
+
+            /* Adjust event status badge for mobile */
+            .event-status {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            /* Fix counter section for mobile */
+            .counter-section {
+                padding: 20px 0;
+                margin-bottom: 0;
+            }
+
+            .event-content-wrapper {
+                margin-top: 20px;
+            }
+
+            .event-content {
+                border-radius: 8px;
+                padding: 20px;
+            }
+
+            .counter-text {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .counter-text h3 {
+                font-size: 20px;
+                line-height: 1.4;
+            }
+
+            .cd-timer {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 0 10px;
+            }
+
+            .cd-item {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .cd-item span {
+                font-size: 24px;
+            }
+
+            .cd-item p {
+                font-size: 14px;
+            }
+
+            /* Fix container overflow */
+            .container {
+                width: 100%;
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+                overflow-x: hidden;
+            }
+
+            .row {
+                margin-right: -15px;
+                margin-left: -15px;
+            }
+
+            .col-lg-4, .col-lg-8 {
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+        }
+
+        /* Additional styles for extra small devices */
+        @media (max-width: 480px) {
+            .event-title {
+                font-size: 1.5rem;
+            }
+
+            .event-content {
+                padding: 15px;
+            }
+
+            .meta-value {
+                font-size: 1rem;
+            }
+
+            .stream-section h2 {
+                font-size: 20px;
+            }
+
+            #map {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 
@@ -194,6 +575,38 @@
     <!-- Event Detail Section Begin -->
     <section class="event-detail-section">
         <div class="event-header" style="background-image: url('{% if event.cover_image %}{{ event.cover_image.url }}{% else %}{% static 'img/default-event-cover.jpg' %}{% endif %}');"></div>
+        <section class="counter-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="counter-text">
+                            <span>Event starts in</span>
+                            <h3>Countdown to<br/>{{ event.name }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="cd-timer" id="eventCountdown">
+                            <div class="cd-item">
+                                <span id="cd-days">00</span>
+                                <p>Days</p>
+                            </div>
+                            <div class="cd-item">
+                                <span id="cd-hours">00</span>
+                                <p>Hours</p>
+                            </div>
+                            <div class="cd-item">
+                                <span id="cd-minutes">00</span>
+                                <p>Minutes</p>
+                            </div>
+                            <div class="cd-item">
+                                <span id="cd-seconds">00</span>
+                                <p>Seconds</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <div class="event-content-wrapper">
             <div class="container">
                 <div class="event-content">
@@ -213,10 +626,13 @@
                         <div class="meta-item">
                             <div class="meta-label">Registration Fee</div>
                             <div class="meta-value">
-                                {% if event.registration_fee > 0 %}
-                                    ₹{{ event.registration_fee|floatformat:2 }}
+                                {% if event.dynamic_pricing_enabled %}
+                                    <h4>Current Registration Fee: ₹{{ event.current_price }}</h4>
+                                    <small class="text-muted">
+                                        *Price varies based on demand. Base price: ₹{{ event.base_price }}
+                                    </small>
                                 {% else %}
-                                    Free
+                                    <h4>Registration Fee: ₹{{ event.base_price }}</h4>
                                 {% endif %}
                             </div>
                         </div>
@@ -241,13 +657,41 @@
                     </div>
                     {% endif %}
                     {% if user.is_authenticated %}
-                        {% if is_registered %}
+                        {% if user == event.organizer %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-crown"></i> You are the organizer of this event
+                                <a href="{% url 'events:event_detail_manage' event.id %}" class="btn btn-primary ml-3">
+                                    Manage Event
+                                </a>
+                            </div>
+                        {% elif is_registered %}
                             <div class="alert alert-success">
                                 You are registered for this event.
                                 {% if event.registration_fee > 0 %}
                                     <a href="{% url 'events:download_invoice' event.id %}" class="btn btn-primary" target="_blank">Download Invoice</a>
                                 {% endif %}
                             </div>
+                            {% if is_registered %}
+                                <div class="stream-section">
+                                    <h2>Event Livestream</h2>
+                                    <div class="stream-container">
+                                        {% if event.is_streaming and event.youtube_stream_url %}
+                                            <iframe width="100%" 
+                                                    height="600" 
+                                                    src="{{ event.youtube_stream_url|youtube_embed_url }}" 
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen>
+                                            </iframe>
+                                        {% else %}
+                                            <div class="stream-waiting">
+                                                <h3>Stream Not Started</h3>
+                                                <p>The event stream hasn't started yet. Please wait for the organizer to begin.</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% elif is_volunteer %}
                             <div class="alert alert-info">
                                 You are registered as a volunteer for this event.
@@ -268,6 +712,105 @@
                         {% endif %}
                     {% else %}
                         <p>Please <a href="{% url 'login' %}">log in</a> to register for this event.</p>
+                    {% endif %}
+                    <div class="event-capacity">
+                        <p>Registration Capacity: {{ event.eventregistration_set.count }} / {{ event.max_attendees }}</p>
+                        {% if event.eventregistration_set.count >= event.max_attendees %}
+                            <p class="text-danger">Event is at full capacity</p>
+                        {% endif %}
+                    </div>
+                    <div class="event-gallery">
+                        <h3>Event Gallery</h3>
+                        <div class="gallery-grid">
+                            {% for item in event.gallery_items.all %}
+                                <div class="gallery-item {{ item.item_type }}">
+                                    {% if item.item_type == 'image' or item.item_type == 'poster' %}
+                                        <a href="{{ item.file.url }}" class="gallery-popup">
+                                            <img src="{{ item.file.url }}" alt="{{ item.title }}">
+                                        </a>
+                                    {% elif item.item_type == 'video' %}
+                                        <video controls>
+                                            <source src="{{ item.file.url }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    {% endif %}
+                                    <div class="gallery-item-info">
+                                        <h4>{{ item.title }}</h4>
+                                        {% if item.description %}
+                                            <p>{{ item.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p class="no-items">No gallery items available yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="gallery-pagination">
+                        {% if gallery_items.has_other_pages %}
+                        <nav aria-label="Gallery navigation">
+                            <ul class="pagination justify-content-center">
+                                {% if gallery_items.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ gallery_items.previous_page_number }}#gallery">&laquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                {% endif %}
+
+                                {% for i in gallery_items.paginator.page_range %}
+                                    {% if gallery_items.number == i %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ i }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ i }}#gallery">{{ i }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if gallery_items.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ gallery_items.next_page_number }}#gallery">&raquo;</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    </div>
+                    <div class="registration-stats">
+                        <p>Available Slots: {{ event.max_attendees|sub:event.eventregistration_set.count }}</p>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ event.eventregistration_set.count|multiply:100|divide:event.max_attendees }}%">
+                            </div>
+                        </div>
+                    </div>
+                    {% if registration and registration.status == 'confirmed' %}
+                        <div class="ticket-section mt-4">
+                            <h4>Your Ticket</h4>
+                            <div class="d-flex align-items-center">
+                                {% if registration.qr_code %}
+                                    <img src="{{ registration.qr_code.url }}" alt="Ticket QR Code" style="width: 100px; height: 100px; margin-right: 15px;">
+                                {% endif %}
+                                <div>
+                                    <p class="mb-2"><strong>Ticket ID:</strong> {{ registration.ticket_id }}</p>
+                                    <a href="{% url 'events:view_ticket' registration.id %}" class="btn btn-primary">
+                                        <i class="fa fa-ticket"></i> View Ticket
+                                    </a>
+                                    <a href="{% url 'events:download_ticket' registration.id %}" class="btn btn-outline-primary ml-2">
+                                        <i class="fa fa-download"></i> Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -314,6 +857,7 @@
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <script src="{% static 'js/streaming.js' %}"></script>
 
     <!-- Razorpay Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -585,6 +1129,74 @@
     });
     </script>
     {% endblock %}
+
+    <script>
+    $(document).ready(function() {
+        $('.gallery-popup').magnificPopup({
+            type: 'image',
+            closeOnContentClick: false,
+            closeBtnInside: false,
+            mainClass: 'mfp-with-zoom',
+            image: {
+                verticalFit: true,
+                titleSrc: function(item) {
+                    return item.el.attr('title') || item.el.find('img').attr('alt');
+                }
+            },
+            zoom: {
+                enabled: true,
+                duration: 300
+            },
+            callbacks: {
+                open: function() {
+                    // Add custom close button
+                    if (!$('.gallery-popup-close').length) {
+                        $('body').append('<button class="gallery-popup-close">&times;</button>');
+                    }
+                    
+                    // Handle close button click
+                    $('.gallery-popup-close').on('click', function() {
+                        $.magnificPopup.close();
+                    });
+                },
+                close: function() {
+                    // Remove custom close button when popup closes
+                    $('.gallery-popup-close').remove();
+                }
+            }
+        });
+    });
+    </script>
+
+    <script>
+    // Event countdown timer
+    function updateTimer() {
+        const eventDate = new Date("{{ event.start_datetime|date:'Y-m-d H:i:s' }}").getTime();
+        const now = new Date().getTime();
+        const distance = eventDate - now;
+
+        if (distance > 0) {
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("cd-days").innerHTML = days.toString().padStart(2, '0');
+            document.getElementById("cd-hours").innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById("cd-minutes").innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById("cd-seconds").innerHTML = seconds.toString().padStart(2, '0');
+        } else {
+            document.getElementById("cd-days").innerHTML = "00";
+            document.getElementById("cd-hours").innerHTML = "00";
+            document.getElementById("cd-minutes").innerHTML = "00";
+            document.getElementById("cd-seconds").innerHTML = "00";
+        }
+    }
+
+    // Update timer every second
+    setInterval(updateTimer, 1000);
+    updateTimer(); // Initial call
+    </script>
 </body>
 
 </html>

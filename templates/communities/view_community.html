@@ -547,6 +547,33 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="community-gallery">
+                <h2 class="section-title">Community Gallery</h2>
+                {% if community.gallery_items.all %}
+                    <div class="gallery-grid">
+                        {% for item in community.gallery_items.all %}
+                            <div class="gallery-item">
+                                {% if item.item_type == 'image' %}
+                                    <a href="{{ item.file.url }}" class="gallery-popup">
+                                        <img src="{{ item.file.url }}" alt="{{ item.title }}">
+                                    </a>
+                                {% elif item.item_type == 'video' %}
+                                    <video controls>
+                                        <source src="{{ item.file.url }}" type="video/mp4">
+                                    </video>
+                                {% endif %}
+                                <div class="gallery-item-info">
+                                    <h5>{{ item.title }}</h5>
+                                    <p>{{ item.description }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No gallery items available.</p>
+                {% endif %}
+            </div>
         </div>
     </section>
     <!-- Community Details Section End -->
@@ -589,6 +616,7 @@
     <script src="{% static 'js/jquery.slicknav.js' %}"></script>
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    {% include 'chatbot/chat_widget.html' %}
 </body>
 
 </html>

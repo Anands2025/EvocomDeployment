@@ -1,0 +1,13 @@
+[2024-09-07 10:20:15] Starting the Community Join test...
+[2024-09-07 10:20:16] Browser window maximized.
+[2024-09-07 10:20:17] Navigated to the login page.
+[2024-09-07 10:20:17] Email input field is visible.
+[2024-09-07 10:20:18] Entered email: sarinrajesh2025@mca.ajce.in
+[2024-09-07 10:20:18] Entered password: ********
+[2024-09-07 10:20:19] Clicked the login button.
+[2024-09-07 10:20:20] Login successful!
+[2024-09-07 10:20:21] Navigated to the community list page.
+[2024-09-07 10:20:22] Clicked on community: Tech Enthusiasts
+[2024-09-07 10:20:23] Clicked join community button.
+[2024-09-07 10:20:24] Successfully joined the community!
+[2024-09-07 10:20:25] Browser closed. Test completed.

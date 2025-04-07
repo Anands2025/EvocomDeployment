@@ -216,25 +216,47 @@
                         </div>
                         <div class="profile-usermenu">
                             <ul class="nav">
-                                <li>
+                                <li {% if request.resolver_match.url_name == 'community_management' and not request.GET.section == 'gallery' %}class="active"{% endif %}>
                                     <div>
                                         <a href="{% url 'communities:community_management' %}">
                                             <i class="fa fa-home"></i>
-                                            Overview </a>
+                                            Overview
+                                        </a>
                                     </div>
                                 </li>
-                                <li>
+                                <li {% if request.resolver_match.url_name == 'chat' %}class="active"{% endif %}>
+                                    <div>
+                                        <a href="{% url 'communities:chat' %}">
+                                            <i class="fa fa-comments"></i>
+                                            Chat with Organizers
+                                            {% if unread_messages_count > 0 %}
+                                                <span class="badge badge-danger">{{ unread_messages_count }}</span>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </li>
+                                <li {% if request.resolver_match.url_name == 'community_members' %}class="active"{% endif %}>
                                     <div>
                                         <a href="{% url 'communities:community_members' %}">
                                             <i class="fa fa-user"></i>
-                                            Members </a>
+                                            Members
+                                        </a>
                                     </div>
                                 </li>
-                                <li class="active">
+                                <li {% if request.resolver_match.url_name == 'community_management' and request.GET.section == 'gallery' %}class="active"{% endif %}>
+                                    <div>
+                                        <a href="{% url 'communities:community_management' %}?section=gallery" id="gallery-link">
+                                            <i class="fa fa-image"></i>
+                                            Gallery
+                                        </a>
+                                    </div>
+                                </li>
+                                <li {% if request.resolver_match.url_name == 'event_organizer_requests' %}class="active"{% endif %}>
                                     <div>
                                         <a href="{% url 'communities:event_organizer_requests' %}">
                                             <i class="fa fa-calendar"></i>
-                                            Organizer Requests </a>
+                                            Organizer Requests
+                                        </a>
                                     </div>
                                 </li>
                             </ul>

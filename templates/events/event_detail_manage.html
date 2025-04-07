@@ -1,10 +1,12 @@
 {% load static %}
+{% load youtube_filters %}
+{% load event_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Manage Event: {{ event.name }} - EvoCom</title>
     <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
@@ -366,6 +368,244 @@
         #volunteerTable td {
             vertical-align: middle;
         }
+
+        .streaming-controls {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .stream-setup h4, .stream-active h4 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .stream-active {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .secondary-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .secondary-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .stream-display {
+            margin: 30px 0;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .stream-display h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .gallery-management {
+            margin-top: 30px;
+        }
+
+        .gallery-management h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .gallery-management form {
+            margin-bottom: 20px;
+        }
+
+        .gallery-management .form-group {
+            margin-bottom: 15px;
+        }
+
+        .gallery-management label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .gallery-management input,
+        .gallery-management textarea,
+        .gallery-management select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .gallery-management .primary-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .gallery-management .primary-btn:hover {
+            background-color: #45a049;
+        }
+
+        #filePreview {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .gallery-management {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .management-section {
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .management-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            flex: 1 1 auto;
+            min-width: 150px;
+            padding: 12px 15px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* Make tables responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 15px;
+        }
+
+        /* Adjust DataTables for mobile */
+        .dataTables_wrapper {
+            padding: 0;
+        }
+
+        .dataTables_filter,
+        .dataTables_length {
+            float: none;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .dataTables_filter input,
+        .dataTables_length select {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        /* Adjust volunteer actions for mobile */
+        .volunteer-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .volunteer-actions button {
+            width: 100%;
+            padding: 8px;
+        }
+
+        /* Responsive meta information */
+        .event-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .meta-item {
+            padding: 15px;
+        }
+
+        /* Responsive pricing details */
+        .pricing-details ul {
+            padding-left: 20px;
+        }
+
+        /* Responsive event actions */
+        .event-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-actions a {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Adjust payment summary for mobile */
+        .payment-summary {
+            padding: 15px;
+        }
+
+        /* Media queries for different screen sizes */
+        @media (max-width: 768px) {
+            .event-header {
+                height: 200px;
+            }
+
+            .event-title {
+                font-size: 24px;
+            }
+
+            .management-tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                margin: 0;
+            }
+
+            #participant-table td,
+            #volunteerTable td,
+            #payment-table td {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .event-content {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 
@@ -424,9 +664,27 @@
                     </div>
                 </div>
 
+                <div class="pricing-details">
+                    <h4>Pricing Information</h4>
+                    {% if event.dynamic_pricing_enabled %}
+                        <p>Dynamic Pricing: Enabled</p>
+                        <ul>
+                            <li>Current Price: ₹{{ event.current_price }}</li>
+                            <li>Base Price: ₹{{ event.base_price }}</li>
+                            <li>Min Price: ₹{{ event.min_price }}</li>
+                            <li>Max Price: ₹{{ event.max_price }}</li>
+                            <li>Price Adjustment: {{ event.price_increment_percentage }}%</li>
+                        </ul>
+                    {% else %}
+                        <p>Fixed Price: ₹{{ event.registration_fee }}</p>
+                    {% endif %}
+                </div>
+
                 <div class="event-actions">
                     <h2>{{ event.name }} - Management</h2>
-                    <a href="{% url 'events:update_event' event.id %}" class="edit-btn">Edit Event Details</a>
+                    {% if event.current_status != 'completed' %}
+                        <a href="{% url 'events:update_event' event.id %}" class="edit-btn">Edit Event Details</a>
+                    {% endif %}
                     <a href="{% url 'events:download_participants_pdf' event.id %}" class="pdf-btn">Download
                         Participants List as PDF</a>
                 </div>
@@ -440,7 +698,9 @@
                         {% if event.registration_fee and event.registration_fee > 0 %}
                         <button class="tab-button" onclick="openTab(event, 'payment-details')">Payment Details</button>
                         {% endif %}
-                        <button class="tab-button" onclick="openTab(event, 'event-settings')">Event Settings</button>
+                        <button class="tab-button" onclick="openTab(event, 'streaming-controls')">Streaming</button>
+                        <button class="tab-button" onclick="openTab(event, 'gallery-management')">Gallery</button>
+                        <button class="tab-button" onclick="openTab(event, 'event-settings')">Settings</button>
                         <button class="tab-button" onclick="openTab(event, 'attendance-management')">Attendance
                             Management</button>
                     </div>
@@ -559,13 +819,16 @@
                 {% endif %}
                 <div id="event-settings" class="tab-content">
                     <h3>Event Settings</h3>
+                    {% if event.current_status == 'completed' %}
+                        <div class="alert alert-warning">
+                            <p>This event is completed. Event details can no longer be edited.</p>
+                        </div>
+                    {% endif %}
                     <div class="update-metrics-container">
-                        <button id="updateMetricsBtn" class="update-metrics-btn"
-                            onclick="updateMetrics({{ event.id }})">
+                        <button id="updateMetricsBtn" class="update-metrics-btn" onclick="updateMetrics({{ event.id }})">
                             <i class="fas fa-sync-alt"></i> Update Event Metrics
                         </button>
                     </div>
-                    <!-- Add content for event settings -->
                 </div>
 
                 <div id="attendance-management" class="tab-content">
@@ -584,6 +847,132 @@
                         </div>
                         <button type="submit" class="btn btn-success">Upload and Process Attendance</button>
                     </form>
+                </div>
+
+                <div id="streaming-controls" class="tab-content">
+                    <h3>Event Streaming</h3>
+                    {% if event.current_status == 'completed' %}
+                        <div class="alert alert-warning">
+                            <p>This event is completed. Streaming is no longer available.</p>
+                        </div>
+                    {% else %}
+                        <div class="streaming-controls">
+                            {% if not event.is_streaming %}
+                                <div class="stream-setup">
+                                    <h4>YouTube Stream Setup</h4>
+                                    <div class="form-group">
+                                        <label for="youtube_url">YouTube Stream URL:</label>
+                                        <input type="url" id="youtube_url" class="form-control" 
+                                               placeholder="https://www.youtube.com/watch?v=..." required>
+                                    </div>
+                                    <button onclick="startYouTubeStream({{ event.id }})" class="primary-btn">Start Stream</button>
+                                </div>
+                            {% else %}
+                                <div class="stream-active">
+                                    <h4>Stream is Live</h4>
+                                    <p>YouTube Stream: <a href="{{ event.youtube_stream_url }}" target="_blank">Open Stream</a></p>
+                                    <button onclick="stopStream({{ event.id }})" class="secondary-btn">End Stream</button>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="stream-display">
+                            <h3>Event Livestream</h3>
+                            <div class="stream-container">
+                                {% if event.is_streaming and event.youtube_stream_url %}
+                                    <iframe width="100%" 
+                                            height="600" 
+                                            src="{{ event.youtube_stream_url|youtube_embed_url }}" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen>
+                                    </iframe>
+                                {% else %}
+                                    <div class="stream-waiting">
+                                        <h3>Stream Not Started</h3>
+                                        <p>Start the stream using the controls above to begin broadcasting.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="gallery-management" class="tab-content" style="display: none;">
+                    <div class="section-title">
+                        <h3>Gallery Management</h3>
+                    </div>
+                
+                    <div class="gallery-controls">
+                        <div class="upload-section">
+                            <h4>Upload New Item</h4>
+                            <form id="galleryUploadForm" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="title">Title</label>
+                                    <input type="text" id="title" name="title" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea id="description" name="description" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="item_type">Type</label>
+                                    <select id="item_type" name="item_type" class="form-control" required>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                        <option value="poster">Poster</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="file">File</label>
+                                    <input type="file" id="file" name="file" class="form-control" required>
+                                    <div id="filePreview" class="mt-3"></div>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" id="is_featured" name="is_featured" class="form-check-input">
+                                    <label class="form-check-label" for="is_featured">Feature this item</label>
+                                </div>
+                                <button type="submit" class="primary-btn">Upload</button>
+                            </form>
+                        </div>
+                
+                        <div class="gallery-items mt-4">
+                            <h4>Gallery Items</h4>
+                            <div class="gallery-grid">
+                                {% for item in event.gallery_items.all %}
+                                    <div class="gallery-item" id="gallery-item-{{ item.id }}">
+                                        <div class="gallery-item-preview">
+                                            {% if item.item_type == 'image' or item.item_type == 'poster' %}
+                                                <img src="{{ item.file.url }}" alt="{{ item.title }}">
+                                            {% elif item.item_type == 'video' %}
+                                                <video controls>
+                                                    <source src="{{ item.file.url }}" type="video/mp4">
+                                                </video>
+                                            {% endif %}
+                                        </div>
+                                        <div class="gallery-item-info">
+                                            <h5>{{ item.title }}</h5>
+                                            <p class="text-muted">{{ item.item_type|title }}</p>
+                                            <button onclick="deleteGalleryItem({{ item.id }})" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted">No gallery items yet.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add this in the management section -->
+                <br>
+                <div class="management-actions mb-4">
+                    <a href="{% url 'events:scan_qr_code' event.id %}" class="btn btn-primary">
+                        <i class="fas fa-qrcode"></i> Scan QR Tickets
+                    </a>
                 </div>
             </div>
         </div>
@@ -632,6 +1021,7 @@
         src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <script src="{% static 'js/streaming.js' %}"></script>
     <script>
         $(document).ready(function () {
             $('#participant-table').DataTable({
@@ -954,6 +1344,314 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function startYouTubeStream(eventId) {
+        const youtubeUrl = document.getElementById('youtube_url').value;
+        if (!youtubeUrl) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please enter a YouTube stream URL',
+                icon: 'error'
+            });
+            return;
+        }
+
+        fetch(`/events/event/${eventId}/start-stream/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                youtube_url: youtubeUrl
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Stream started successfully',
+                    icon: 'success'
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Failed to start stream',
+                    icon: 'error'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error!',
+                text: 'An error occurred while starting the stream',
+                icon: 'error'
+            });
+            console.error('Error:', error);
+        });
+    }
+
+    function stopStream(eventId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will end the live stream",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, end stream'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/events/event/${eventId}/stop-stream/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Stopped!',
+                            'The stream has been ended.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            data.message || 'Failed to stop stream',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while stopping the stream',
+                        'error'
+                    );
+                    console.error('Error:', error);
+                });
+            }
+        });
+    }
+    </script>
+
+    <script>
+    $(document).ready(function() {
+        // Gallery upload form submission
+        $('#galleryUploadForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const eventId = {{ event.id }};
+            
+            // Show loading state
+            Swal.fire({
+                title: 'Uploading...',
+                text: 'Please wait while we upload your file',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: `/events/event/${eventId}/gallery/upload/`,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Upload Failed',
+                            text: response.error || 'An error occurred during upload'
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Failed',
+                        text: xhr.responseJSON?.error || 'An error occurred during upload'
+                    });
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+    function deleteGalleryItem(itemId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/events/event/${eventId}/gallery/${itemId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`gallery-item-${itemId}`).remove();
+                        Swal.fire('Deleted!', 'Gallery item has been deleted.', 'success');
+                    } else {
+                        Swal.fire('Error', data.message || 'Failed to delete item', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'An error occurred while deleting', 'error');
+                });
+            }
+        });
+    }
+    </script>
+
+    <script>
+    document.getElementById('file').addEventListener('change', function(e) {
+        const preview = document.getElementById('filePreview');
+        const file = e.target.files[0];
+        const itemType = document.getElementById('item_type').value;
+        
+        // Clear previous preview
+        preview.innerHTML = '';
+        
+        if (!file) return;
+        
+        // Validate file size (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            Swal.fire('Error', 'File size must be less than 10MB', 'error');
+            this.value = '';
+            return;
+        }
+        
+        if (itemType === 'video') {
+            if (!file.type.startsWith('video/')) {
+                Swal.fire('Error', 'Please select a valid video file', 'error');
+                this.value = '';
+                return;
+            }
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.controls = true;
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '300px';
+            preview.appendChild(video);
+        } else {
+            if (!file.type.startsWith('image/')) {
+                Swal.fire('Error', 'Please select a valid image file', 'error');
+                this.value = '';
+                return;
+            }
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '300px';
+            img.style.objectFit = 'contain';
+            preview.appendChild(img);
+        }
+    });
+
+    // Update file validation when item type changes
+    document.getElementById('item_type').addEventListener('change', function() {
+        document.getElementById('file').value = '';
+        document.getElementById('filePreview').innerHTML = '';
+    });
+    </script>
+
+    <script>
+    // Initialize DataTables with mobile-specific options
+    $(document).ready(function() {
+        if (!$.fn.DataTable.isDataTable('#participant-table')) {
+            $('#participant-table').DataTable({
+                responsive: true,
+                scrollX: true,
+                autoWidth: false,
+                language: {
+                    searchPlaceholder: "Search...",
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+            });
+        }
+
+        if (!$.fn.DataTable.isDataTable('#volunteerTable')) {
+            $('#volunteerTable').DataTable({
+                responsive: true,
+                scrollX: true,
+                autoWidth: false,
+                language: {
+                    searchPlaceholder: "Search...",
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+            });
+        }
+
+        if (!$.fn.DataTable.isDataTable('#payment-table')) {
+            $('#payment-table').DataTable({
+                responsive: true,
+                scrollX: true,
+                autoWidth: false,
+                language: {
+                    searchPlaceholder: "Search...",
+                },
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50], [5, 10, 25, 50]],
+            });
+        }
+    });
+
+    // Handle tab switching for mobile
+    function openTab(evt, tabName) {
+        var i, tabContent, tabButtons;
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+        tabButtons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+        
+        // Scroll to the tab content on mobile
+        document.getElementById(tabName).scrollIntoView({ behavior: 'smooth' });
+    }
+    </script>
 </body>
 
 </html>

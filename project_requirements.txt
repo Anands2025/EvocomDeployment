@@ -1,0 +1,62 @@
+# Core Framework & Extensions
+Django>=5.1.1
+django-allauth>=65.0.2
+django-otp>=1.2.2
+whitenoise>=6.7.0
+
+# Database & ORM
+mysqlclient>=2.2.4
+mysql-connector-python>=9.1.0
+
+# Payment Processing
+razorpay>=1.4.2
+stripe>=11.0.0
+
+# Data Science & Machine Learning
+scikit-learn>=1.5.2
+pandas>=2.2.3
+numpy>=2.1.1
+
+# Document Processing
+xhtml2pdf>=0.2.16
+openpyxl>=3.1.5
+reportlab>=4.2.5
+weasyprint>=62.3
+
+# Image Processing
+Pillow>=10.4.0
+
+# Date & Time
+pytz>=2024.2
+python-dateutil>=2.9.0
+
+# Security & Encryption
+cryptography>=43.0.1
+pycparser>=2.22
+
+# Development Tools
+python-dotenv>=1.0.0
+
+# Web Utilities
+requests>=2.32.3
+urllib3>=2.2.3
+
+# QR Code Generation
+qrcode>=8.0
+
+# Geographic Tools
+geopy>=2.4.1
+geographiclib>=2.0
+
+# Data Visualization
+matplotlib>=3.9.2
+seaborn>=0.13.2
+
+# Web Server
+gunicorn>=23.0.0
+
+# Additional Dependencies
+asgiref>=3.8.1
+sqlparse>=0.5.1
+certifi>=2024.8.30
+charset-normalizer>=3.3.2 

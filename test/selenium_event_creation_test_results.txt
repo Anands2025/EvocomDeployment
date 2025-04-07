@@ -1,0 +1,13 @@
+[2024-09-07 10:15:30] Starting the Event Creation test...
+[2024-09-07 10:15:31] Browser window maximized.
+[2024-09-07 10:15:32] Navigated to the login page.
+[2024-09-07 10:15:32] Email input field is visible.
+[2024-09-07 10:15:32] Entered email: sarinrajesh2025@mca.ajce.in
+[2024-09-07 10:15:33] Entered password: ********
+[2024-09-07 10:15:34] Clicked the login button.
+[2024-09-07 10:15:35] Login successful!
+[2024-09-07 10:15:36] Navigated to the event creation page.
+[2024-09-07 10:15:37] Filled in event details.
+[2024-09-07 10:15:38] Submitted the event creation form.
+[2024-09-07 10:15:39] Event creation successful!
+[2024-09-07 10:15:40] Browser closed. Test completed.

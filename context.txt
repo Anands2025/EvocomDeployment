@@ -1,0 +1,847 @@
+Sure! Here’s a summary of your entire project based on the provided context:
+
+---
+
+### Project Summary: EvoCom
+
+**Overview**:  
+EvoCom is a community management platform that allows users to create and join communities, organize events, and connect with others. The platform includes features for chat, event management, and user roles.
+
+---
+
+### Key Components:
+
+1. **Chatbot Functionality**:
+   - The chatbot serves as an assistant for users, providing concise and direct responses about the EvoCom platform.
+   - The chatbot's responses are generated using the HuggingFace API, with a focus on user engagement and support.
+   - Relevant user context is gathered to enhance the chatbot's responses.
+
+   **Relevant Code**:
+   
+```19:159:chatbot/views.py
+def get_bot_response(message, context=""):
+    """Get response from HuggingFace API using Mistral"""
+    headers = {"Authorization": f"Bearer {settings.HUGGINGFACE_API_KEY}"}
+    
+    # Concise base prompt
+    system_prompt = """You are EvoCom Assistant, a helpful AI for the EvoCom community platform. 
+    EvoCom helps users create and join communities, organize events, and connect with others.
+    Provide friendly, concise responses."""
+    
+    # Add detailed information only for specific queries
+    if any(keyword in message.lower() for keyword in ['how to', 'what is', 'explain', 'help']):
+        system_prompt += """
+
+        Key Features:
+        - Community Management: Create, join, and manage communities
+        - Event Organization: Create events, track attendance
+        - User Roles: Members, Organizers, Admins
+        - Profile Management: Update info, security settings"""
+    
+    full_message = f"""<s>[INST] {system_prompt}
+
+    Context:
+    {context}
+    
+    User Message: {message}[/INST]</s>"""
+    
+    try:
+        response = requests.post(
+            settings.HUGGINGFACE_API_URL,
+            headers=headers,
+            json={
+                "inputs": full_message,
+                "parameters": {
+                    "max_new_tokens": 150,
+                    "temperature": 0.7,
+                    "top_p": 0.9,
+                    "return_full_text": False,
+                    "do_sample": True
+                }
+            }
+        )
+        
+        if response.status_code == 200:
+            bot_response = response.json()[0]['generated_text']
+            bot_response = bot_response.replace("[/INST]", "").replace("[INST]", "").strip()
+            return bot_response, 'success'
+        else:
+            logger.error(f"API Error: {response.status_code} - {response.text}")
+            return "I'm having trouble processing your request. Please try again.", 'error'
+            
+    except Exception as e:
+        logger.error(f"Error calling HuggingFace API: {str(e)}")
+
+
+@login_required
+@require_POST
+def chat_message(request):
+    try:
+        data = json.loads(request.body)
+        user_message = data.get('message', '')
+        user = request.user
+        
+        # Get basic user context
+        user_communities = Community.objects.filter(usercommunity__user=user)
+        upcoming_events = Event.objects.filter(
+            community__in=user_communities,
+            end_datetime__gte=timezone.now()
+        ).order_by('start_datetime')[:3]
+        
+        # Get community categories
+        community_categories = CommunityCategory.objects.filter(
+            community__in=user_communities
+        ).distinct()
+        
+        # Get user's roles in communities
+        admin_communities = Community.objects.filter(admin=user)
+        created_communities = Community.objects.filter(created_by=user)
+        
+        # Get user's event organizer status
+        is_event_organizer = EventOrganizers.objects.filter(user=user, status='active').exists()
+        organizer_requests = EventOrganizerRequest.objects.filter(member=user)
+        
+        # Create comprehensive context
+        context = f"""
+        User Information:
+        - Name: {user.first_name} {user.last_name}
+        - Platform Role: {user.details.role if hasattr(user, 'details') else 'Member'}
+        - Email: {user.email}
+        - Join Date: {user.date_joined.strftime('%Y-%m-%d')}
+
+        Community Engagement:
+        - Total Communities: {user_communities.count()}
+        - Admin of Communities: {admin_communities.count()}
+        - Created Communities: {created_communities.count()}
+        - Community Categories: {', '.join([cat.name for cat in community_categories])}
+        - Communities: {', '.join([f"{c.name} ({'Admin' if c in admin_communities else 'Member'})" for c in user_communities[:3]])}
+
+        Event Information:
+        - Event Organizer Status: {'Active' if is_event_organizer else 'Not an organizer'}
+        - Pending Organizer Requests: {organizer_requests.filter(status='pending').count()}
+        - Approved Organizer Requests: {organizer_requests.filter(status='approved').count()}
+        - Upcoming Events: {', '.join([f"{e.name} on {e.start_datetime.strftime('%Y-%m-%d')}" for e in upcoming_events]) if upcoming_events else 'None scheduled'}
+        
+        Platform Features:
+        - Community Management: Create, join, and manage communities
+        - Event Organization: Create and manage events, track attendance
+        - Volunteer Management: Register as volunteer, assign tasks
+        - Member Networking: Connect with community members
+        - Discussion Forums: Engage in community discussions
+        - Resource Sharing: Share and access community resources
+
+        
+        # Add specific context based on user's query
+        if 'community' in user_message.lower():
+            context += f"\nCommunity Focus: Managing {admin_communities.count()} communities, member of {user_communities.count() - admin_communities.count()} others"
+        elif 'event' in user_message.lower():
+            context += f"\nEvent Focus: {'Can organize events' if is_event_organizer else 'Can participate in events'}"
+        elif 'profile' in user_message.lower():
+            context += f"\nProfile Focus: Platform role is {user.details.role if hasattr(user, 'details') else 'Member'}"
+        elif 'admin' in user_message.lower():
+            context += f"\nAdmin Focus: Administrator of {admin_communities.count()} communities"
+        
+        bot_response, status = get_bot_response(user_message, context)
+        
+        ChatMessage.objects.create(
+            user=user,
+            message=user_message,
+            response=bot_response
+        )
+        
+        return JsonResponse({
+            'response': bot_response,
+            'status': status
+        })
+
+    except Exception as e:
+        logger.error(f"Unexpected error in chat_message: {str(e)}")
+        return JsonResponse({
+            'response': "Sorry, I encountered an unexpected error. Please try again.",
+            'status': 'error'
+        })
+```
+
+
+2. **Event Management**:
+   - Users can create, update, and manage events within their communities.
+   - Events have attributes such as name, description, start and end times, location, and registration fees.
+   - The system updates event statuses automatically based on the current date.
+
+   **Relevant Code**:
+   
+```43:132:events/views.py
+def create_event(request, community_id):
+    community = get_object_or_404(Community, id=community_id)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        category_id = request.POST.get('category')
+        
+        # Use parse_datetime instead of strptime
+        start_datetime = parse_datetime(request.POST.get('start_datetime'))
+        end_datetime = parse_datetime(request.POST.get('end_datetime'))
+        
+        # Make sure the datetimes are timezone-aware
+        if start_datetime and not start_datetime.tzinfo:
+            start_datetime = timezone.make_aware(start_datetime)
+        if end_datetime and not end_datetime.tzinfo:
+            end_datetime = timezone.make_aware(end_datetime)
+        
+        address = request.POST.get('address')
+        location = request.POST.get('location')
+        location_description = request.POST.get('location_description')
+        latitude = request.POST.get('latitude')
+        longitude = request.POST.get('longitude')
+        registration_fee = request.POST.get('registration_fee')
+        cover_image = request.FILES.get('cover_image')
+
+        category = get_object_or_404(EventCategory, id=category_id)
+        
+        event = Event(
+            name=name,
+            description=description,
+            category=category,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            address=address,
+            location=location,
+            location_description=location_description,
+            latitude=latitude,
+            longitude=longitude,
+            registration_fee=registration_fee,
+            organizer=request.user,
+            community=community,
+            cover_image=cover_image
+        )
+        event.save()
+        return redirect('events:event_management', community_id=community_id)
+...
+
+
+@login_required
+def update_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    
+    # Check if event is completed
+    if event.current_status == 'completed':
+        messages.error(request, "Cannot edit completed events.")
+        return redirect('events:event_management', community_id=event.community.id)
+    
+    categories = EventCategory.objects.filter(status="enabled")
+
+    if request.method == 'POST':
+        event.name = request.POST.get('name')
+        event.description = request.POST.get('description')
+        event.category_id = request.POST.get('category')
+        
+        # Convert string to datetime object
+        start_datetime = datetime.strptime(request.POST.get('start_datetime'), "%Y-%m-%dT%H:%M")
+        end_datetime = datetime.strptime(request.POST.get('end_datetime'), "%Y-%m-%dT%H:%M")
+        
+        # Make the datetime timezone-aware
+        event.start_datetime = timezone.make_aware(start_datetime)
+        event.end_datetime = timezone.make_aware(end_datetime)
+        
+        event.address = request.POST.get('address')
+        event.location = request.POST.get('location')
+        event.location_description = request.POST.get('location_description')
+        event.latitude = request.POST.get('latitude')
+        event.longitude = request.POST.get('longitude')
+        event.registration_fee = request.POST.get('registration_fee')
+        
+        # Handle cover image update
+        new_cover_image = request.FILES.get('cover_image')
+        if new_cover_image:
+            event.cover_image = new_cover_image
+        
+        event.save()
+        
+        return redirect('events:event_management', community_id=event.community.id)
+
+```
+
+
+3. **Community Management**:
+   - Users can join and manage communities, with roles defined as members, organizers, or admins.
+   - The platform allows for community engagement through features like chat rooms and event organization.
+
+   **Relevant Code**:
+   
+```283:460:communities/views.py
+@login_required
+def chat_view(request):
+    user = request.user
+    
+    # For community admins: get all chat rooms with event organizers
+    if user.admin_communities.exists():
+        # Get all approved event organizers for admin's communities
+        admin_communities = user.admin_communities.all()
+        event_organizers = User.objects.filter(
+            eventorganizerrequest__community__in=admin_communities,
+            eventorganizerrequest__status='approved'
+        ).distinct()
+        
+        # Get or create chat rooms for each organizer
+        chat_rooms = []
+        for community in admin_communities:
+            community_organizers = event_organizers.filter(
+                eventorganizerrequest__community=community
+            )
+            for organizer in community_organizers:
+                chat_room, created = ChatRoom.objects.get_or_create(
+                    community=community,
+                    admin=user,
+                    organizer=organizer
+                )
+                chat_rooms.append(chat_room)
+        
+        chat_rooms = ChatRoom.objects.filter(
+            id__in=[room.id for room in chat_rooms]
+        ).select_related('community', 'admin', 'organizer')
+    
+    # For event organizers: get chat rooms with community admins
+    else:
+        organizer_communities = Community.objects.filter(
+            eventorganizerrequest__member=user,
+            eventorganizerrequest__status='approved'
+        )
+        chat_rooms = ChatRoom.objects.filter(
+            community__in=organizer_communities,
+            organizer=user
+        ).select_related('community', 'admin', 'organizer')
+    
+    # Get unread message counts
+    for room in chat_rooms:
+        room.unread_count = ChatMessage.objects.filter(
+            chat_room=room,
+            receiver=user,
+            is_read=False
+        ).count()
+    
+    context = {
+        'chat_rooms': chat_rooms,
+        'current_room': chat_rooms.first() if chat_rooms.exists() else None,
+        'messages': ChatMessage.objects.filter(chat_room=chat_rooms.first()).order_by('timestamp') if chat_rooms.exists() else [],
+        'is_admin': user.admin_communities.exists()
+    }
+    
+
+
+@login_required
+def get_messages(request, room_id):
+    chat_room = get_object_or_404(ChatRoom, id=room_id)
+    messages = ChatMessage.objects.filter(chat_room=chat_room).order_by('timestamp')
+    
+    # Mark received messages as read
+    unread_messages = messages.filter(receiver=request.user, is_read=False)
+    current_time = timezone.now()
+    unread_messages.update(is_read=True, status='read', read_time=current_time)
+    
+    ist = pytz.timezone('Asia/Kolkata')
+    messages_data = [{
+        'id': msg.id,
+        'message': msg.message,
+        'timestamp': msg.timestamp.astimezone(ist).strftime('%I:%M %p'),
+        'is_sent': msg.sender == request.user,
+        'file_url': msg.file.url if msg.file else None,
+        'file_name': msg.file_name if msg.file else None,
+        'status': msg.status,
+        'read_time': msg.read_time.astimezone(ist).strftime('%I:%M %p') if msg.read_time else None
+    } for msg in messages]
+    
+
+
+@login_required
+@require_POST
+def send_message(request, room_id):
+    chat_room = get_object_or_404(ChatRoom, id=room_id)
+    
+    # Verify user is part of the chat room
+    if request.user != chat_room.admin and request.user != chat_room.organizer:
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    try:
+        message_text = request.POST.get('message', '').strip()
+        file = request.FILES.get('file')
+        
+        if not message_text and not file:
+            return JsonResponse({'error': 'Message or file is required'}, status=400)
+        
+        # Determine receiver
+        receiver = chat_room.organizer if request.user == chat_room.admin else chat_room.admin
+        
+        message = ChatMessage.objects.create(
+            chat_room=chat_room,
+            sender=request.user,
+            receiver=receiver,
+            message=message_text,
+            community=chat_room.community,
+            is_read=False
+        )
+
+        if file:
+            message.file = file
+            message.file_name = file.name
+            message.save()
+        
+        ist = pytz.timezone('Asia/Kolkata')
+        return JsonResponse({
+            'status': 'success',
+            'message': {
+                'id': message.id,
+                'message': message.message,
+                'timestamp': message.timestamp.astimezone(ist).strftime('%I:%M %p'),
+                'sender_name': message.sender.get_full_name() or message.sender.username,
+                'is_sent': True,
+                'file_url': message.file.url if message.file else None,
+                'file_name': message.file_name if message.file else None,
+                'status': 'sent'
+            }
+        })
+    except Exception as e:
+
+
+@login_required
+def organizer_chat(request):
+    user = request.user
+    
+    # Get communities where user is an approved event organizer
+    organizer_communities = Community.objects.filter(
+        eventorganizerrequest__member=user,
+        eventorganizerrequest__status='approved'
+    )
+    
+    chat_rooms = ChatRoom.objects.filter(
+        community__in=organizer_communities,
+        organizer=user
+    ).select_related('community', 'admin', 'organizer')
+    
+    # Create chat rooms if they don't exist
+    for community in organizer_communities:
+        ChatRoom.objects.get_or_create(
+            community=community,
+            admin=community.admin,
+            organizer=user
+        )
+    
+    # Refresh chat rooms list after creating new ones
+    chat_rooms = ChatRoom.objects.filter(
+        community__in=organizer_communities,
+        organizer=user
+    ).select_related('community', 'admin', 'organizer')
+    
+    # Get unread message counts
+    for room in chat_rooms:
+        room.unread_count = ChatMessage.objects.filter(
+            chat_room=room,
+            receiver=user,
+            is_read=False
+        ).count()
+    
+    context = {
+        'chat_rooms': chat_rooms,
+        'current_room': chat_rooms.first() if chat_rooms.exists() else None,
+        'messages': ChatMessage.objects.filter(chat_room=chat_rooms.first()).order_by('timestamp') if chat_rooms.exists() else [],
+        'is_admin': False
+    }
+    
+    return render(request, 'communities/organizer_chat.html', context)
+```
+
+
+4. **User Interaction**:
+   - The platform includes a chat widget for real-time communication between users and event organizers.
+   - Users can send messages, and the system tracks unread messages and chat rooms.
+
+   **Relevant Code**:
+   
+```1:27:templates/chatbot/chat_widget.html
+{% load static %}
+<div id="chat-widget" class="chat-widget">
+    <div class="chat-header" onclick="toggleChat()">
+        <div class="header-content">
+            <div class="bot-avatar">
+                <img src="{% static 'img/botimg.jpg' %}" alt="Bot">
+            </div>
+            <span>EvoCom Assistant</span>
+        </div>
+        <button class="minimize-btn">+</button>
+    </div>
+    <div class="chat-body" style="display: none;">
+        <div id="chat-messages" class="chat-messages">
+            <div class="bot-message">
+                <div class="message-content">
+                    👋 Hi! I'm your EvoCom assistant. How can I help you today?
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-message" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+```
+
+
+5. **Database Models**:
+   - The project uses Django models to define the structure of data, including users, events, communities, and chat messages.
+   - Migrations are used to manage changes to the database schema.
+
+   **Relevant Code**:
+   
+```1:30:chatbot/migrations/0001_initial.py
+# Generated by Django 4.2.18 on 2025-01-27 04:48
+
+from django.conf import settings
+from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='ChatMessage',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('message', models.TextField()),
+                ('response', models.TextField()),
+                ('timestamp', models.DateTimeField(auto_now_add=True)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'ordering': ['-timestamp'],
+            },
+        ),
+    ]
+```
+
+
+6. **Frontend Structure**:
+   - The frontend is built using HTML, CSS, and JavaScript, with Bootstrap for styling.
+   - The project includes various templates for community and event management, ensuring a cohesive user experience.
+
+   **Relevant Code**:
+   
+```1:387:templates/communities/events_list.html
+...
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.1);
+        }
+
+        .event-details {
+            padding: 20px;
+        }
+
+        .event-details h5 {
+            color: #333;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .event-details p {
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-details i {
+            color: #ff5722;
+            width: 20px;
+            text-align: center;
+        }
+
+        .event-details .primary-btn {
+            background-color: #ff5722;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 16px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .primary-btn:hover {
+            background-color: #f44336;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge i {
+            color: #fff;
+        }
+
+        .badge-success { background-color: #28a745; }
+        .badge-primary { background-color: #007bff; }
+        .badge-secondary { background-color: #6c757d; }
+
+...
+
+    <!-- Header Section Begin -->
+    <header class="header-section">
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'users:community_admin_index' %}">
+                    <img src="{% static 'img/logo-black.png' %}" height="100px" alt="logo">
+                </a>
+            </div>
+            <div class="nav-menu">
+                <nav class="mainmenu mobile-menu">
+                    <ul>
+                        <li><a href="{% url 'users:community_admin_index' %}">Home</a></li>
+                        <li><a href="{% url 'communities:community_management' %}">Manage Community</a></li>
+                        <li><a href="{% url 'communities:community_statistics' community.id %}">Statistics</a></li>
+                        <li class="active"><a href="{% url 'communities:community_events_list' community.id %}">Events List</a></li>
+                        <li><a href="{% url 'users:community_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                    </ul>
+                </nav>
+                <a href="{% url 'users:logout' %}" class="primary-btn top-btn">logout</a>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Event List Section Begin -->
+    <section class="event-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>{{ community.name }} Events</h2>
+                        <p>Manage and monitor all your community events</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ongoing Events -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="text-success mb-4"><i class="fa fa-play-circle"></i> Ongoing Events</h3>
+                    {% if ongoing_events %}
+                        <div class="event-grid">
+                            {% for event in ongoing_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-clock"></i> Ends: {{ event.end_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-map-marker"></i> {{ event.location }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No ongoing events.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <h3 class="text-primary mb-4"><i class="fa fa-calendar"></i> Upcoming Events</h3>
+                    {% if upcoming_events %}
+                        <div class="event-grid">
+                            {% for event in upcoming_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-calendar"></i> Starts: {{ event.start_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-map-marker"></i> {{ event.location }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No upcoming events.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Completed Events -->
+            <div class="row mt-5">
+                <div class="col-lg-12">
+                    <h3 class="text-secondary mb-4"><i class="fa fa-check-circle"></i> Completed Events</h3>
+                    {% if completed_events %}
+                        <div class="event-grid">
+                            {% for event in completed_events %}
+                                <div class="event-card">
+                                    <div class="event-image">
+                                        {% if event.cover_image %}
+                                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                                        {% else %}
+                                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="event-details">
+                                        <h5>{{ event.name }}</h5>
+                                        <p><i class="fa fa-calendar-check"></i> Ended: {{ event.end_datetime|date:"F j, Y, g:i a" }}</p>
+                                        <p><i class="fa fa-users"></i> Total Registrations: {{ event.registration_count }}</p>
+                                        <p><i class="fa fa-rupee-sign"></i> Revenue: ₹{{ event.revenue }}</p>
+                                        <a href="javascript:void(0);" onclick="showEventDetails({{ event.id }})" class="primary-btn">View Details</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No completed events.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Event List Section End -->
+
+    <!-- Event Details Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img id="eventImage" src="" alt="Event Image" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <h4 id="eventTitle" class="mb-3"></h4>
+                            <div class="event-detail"><strong>Start:</strong> <span id="eventStart"></span></div>
+                            <div class="event-detail"><strong>End:</strong> <span id="eventEnd"></span></div>
+                            <div class="event-detail"><strong>Location:</strong> <span id="eventLocation"></span></div>
+                            <div class="event-detail"><strong>Registrations:</strong> <span id="eventRegistrations"></span></div>
+                            <div class="event-detail"><strong>Fee:</strong> <span id="eventFee"></span></div>
+                            <div class="event-detail mt-3">
+                                <strong>Description:</strong>
+                                <p id="eventDescription" class="mt-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Js Plugins -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+    function showEventDetails(eventId) {
+$.ajax({
+            url: "{% url 'events:event_detail_api' 0 %}".replace('0', eventId),
+            type: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(event) {
+                $('#eventTitle').text(event.name);
+                $('#eventStart').text(moment(event.start_datetime).format('MMMM D, YYYY, h:mm A'));
+                $('#eventEnd').text(moment(event.end_datetime).format('MMMM D, YYYY, h:mm A'));
+                $('#eventLocation').text(event.location);
+                $('#eventRegistrations').text(event.registration_count);
+                $('#eventFee').text(event.registration_fee > 0 ? `₹${event.registration_fee}` : 'Free');
+                $('#eventDescription').text(event.description);
+                $('#eventImage').attr('src', event.cover_image || "{% static 'img/default-event-cover.jpg' %}");
+                
+                $('#eventModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching event details:', error);
+                alert('Failed to load event details. Please try again.');
+            }
+        });
+    }
+
+    // Remove the countdown function call from main.js
+    $(document).ready(function() {
+        if (typeof mainInit === 'function') {
+            const originalMainInit = mainInit;
+            mainInit = function() {
+                const result = originalMainInit.apply(this, arguments);
+                // Prevent countdown initialization
+                return result;
+            };
+        }
+    });
+    </script>
+</body>
+</html> 
+```
+
+
+---
+
+### Next Steps:
+- Continue editing the project by focusing on enhancing the chatbot's capabilities, improving event management features, and refining the user interface.
+- Ensure that all components are well-integrated and that user experience is prioritized.
+
+Feel free to ask if you need more specific details or further assistance!

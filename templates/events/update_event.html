@@ -185,10 +185,6 @@
                         <input type="hidden" id="latitude" name="latitude" value="{{ event.latitude|default_if_none:'' }}">
                         <input type="hidden" id="longitude" name="longitude" value="{{ event.longitude|default_if_none:'' }}">
                         <div class="form-group">
-                            <label for="registration_fee">Registration Fee (in ₹)</label>
-                            <input type="number" id="registration_fee" name="registration_fee" min="0" step="0.01" value="{{ event.registration_fee }}" required>
-                        </div>
-                        <div class="form-group">
                             <label for="cover_image">Cover Image</label>
                             {% if event.cover_image %}
                                 <img src="{{ event.cover_image.url }}" alt="Current cover image" style="max-width: 200px; margin-bottom: 10px;">
@@ -198,6 +194,51 @@
                             {% endif %}
                             <input type="file" id="cover_image" name="cover_image" accept="image/*">
                         </div>
+                        <div class="form-group">
+                            <label for="max_attendees">Maximum Attendees</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="max_attendees" 
+                                   name="max_attendees" 
+                                   min="1" 
+                                   value="{{ event.max_attendees }}"
+                                   required>
+                            <small class="form-text text-muted">Maximum number of participants that can register for this event</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="base_price">Base Price (₹)</label>
+                            <input type="number" class="form-control" id="base_price" name="base_price" 
+                                   min="0" step="0.01" value="{{ event.base_price }}" required>
+                            <small class="form-text text-muted">Base registration fee for the event</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="dynamic_pricing_enabled">Enable Dynamic Pricing</label>
+                            <input type="checkbox" id="dynamic_pricing_enabled" name="dynamic_pricing_enabled" 
+                                   {% if event.dynamic_pricing_enabled %}checked{% endif %}>
+                            <small class="form-text text-muted">Enable price adjustments based on demand</small>
+                        </div>
+
+                        <div class="dynamic-pricing-fields" style="display: {% if event.dynamic_pricing_enabled %}block{% else %}none{% endif %};">
+                            <div class="form-group">
+                                <label for="min_price">Minimum Price (₹)</label>
+                                <input type="number" class="form-control" id="min_price" name="min_price" 
+                                       min="0" step="0.01" value="{{ event.min_price }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="max_price">Maximum Price (₹)</label>
+                                <input type="number" class="form-control" id="max_price" name="max_price" 
+                                       min="0" step="0.01" value="{{ event.max_price }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="price_increment_percentage">Price Adjustment Percentage</label>
+                                <input type="number" class="form-control" id="price_increment_percentage" 
+                                       name="price_increment_percentage" value="{{ event.price_increment_percentage }}" 
+                                       min="0" max="100" step="0.01">
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <button type="submit" class="btn">Update Event</button>
                         </div>
@@ -330,6 +371,11 @@
             } else {
                 alert("Error: Your browser doesn't support geolocation.");
             }
+        });
+
+        document.getElementById('dynamic_pricing_enabled').addEventListener('change', function() {
+            const dynamicPricingFields = document.querySelector('.dynamic-pricing-fields');
+            dynamicPricingFields.style.display = this.checked ? 'block' : 'none';
         });
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR5UzoEbsm9hdEdoEP_aHzpBxsVz-ROqI&libraries=places,geocoding&callback=initMap"></script>

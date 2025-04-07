@@ -16,7 +16,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SITE_URL = 'https://evocom.onrender.com'
+SITE_URL = 'https://evocom.koyeb.app/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'communities',
     'evocom_admin',
     'events',
+    'chatbot',
     
     
     'django.contrib.sites',  
@@ -51,6 +52,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -66,7 +69,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'events.middleware.ReminderMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'evocom.urls'
@@ -96,13 +99,13 @@ WSGI_APPLICATION = 'evocom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'evocom_touchspite',
-        'USER': 'evocom_touchspite',
-        'PASSWORD': '7af19c3edd3937f5c6051bda1a18cbd899393ab5',  # Replace with your actual password
-        'HOST': 'fx71u.h.filess.io',
-        'PORT': '3305',
+        'NAME': 'evocom_postmiddle',
+        'USER': 'evocom_postmiddle',
+        'PASSWORD': '8384085adf5855c7cc90ba7211c50379306aefb0',
+        'HOST': '68mko.h.filess.io',
+        'PORT': '61000',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
         }
     }
 }
@@ -204,3 +207,21 @@ STRIPE_SECRET_KEY = 'sk_test_51Pt9v92NqMToBdgAl36iHFblsffGVdmwO7Vu9crgAV2yFYLtEl
 
 RAZORPAY_KEY_ID = 'rzp_test_1vZK3GexmGW5zt'
 RAZORPAY_KEY_SECRET = 'eIKYygydEQ5iicHT2N6gaVuC'
+
+# OpenAI Configuration
+OPENAI_API_KEY = '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'
+
+# HuggingFace Configuration
+HUGGINGFACE_API_KEY = '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'
+HUGGINGFACE_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+
+# Streaming Settings
+RTMP_SERVER = {
+    'RTMP_URL': 'rtmp://localhost/live',  # Base RTMP URL
+    'HLS_URL': 'http://localhost/hls',    # HLS URL for viewers
+    'STREAM_KEY_LENGTH': 16,              # Length of generated stream keys
+    'CORS_ORIGINS': [
+        'http://localhost:8000',
+        'https://your-domain.com'
+    ]
+}

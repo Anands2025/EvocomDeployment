@@ -26,4 +26,5 @@ urlpatterns = [
     path('evocom_admin/', include('evocom_admin.urls',namespace='evocom_admin')),
     path('events/', include('events.urls',namespace='events')),
     path('accounts/', include('allauth.urls')),
+    path('chatbot/', include('chatbot.urls')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

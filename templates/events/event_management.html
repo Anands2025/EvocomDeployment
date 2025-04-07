@@ -1,4 +1,5 @@
 {% load static %}
+{% load event_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -108,9 +109,18 @@
                 <nav class="mainmenu mobile-menu">
                     <ul>
                         <li><a href="{% url 'users:member_index' %}">Home</a></li>
-                        <li><a href="{% url 'communities:show_communities' %}">Explore</a></li>
+                        
                         <li><a href="{% url 'communities:joined_communities' %}">My Communities</a></li>
-                        <li><a href="{% url 'users:user_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a></li>
+                        <li>
+                            <a href="{% url 'communities:organizer_chat' %}">
+                                <i class="fa fa-comments"></i> Chat with Admins
+                                {% if unread_messages_count > 0 %}
+                                <span class="badge badge-danger">{{ unread_messages_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li><a href="{% url 'users:user_profile' %}">Hi, {{ user.first_name }} {{ user.last_name }}</a>
+                        </li>
                     </ul>
                 </nav>
                 <a href="{% url 'users:logout' %}" class="primary-btn top-btn">Logout</a>
@@ -136,18 +146,19 @@
                 <div class="event-card">
                     <div class="event-image">
                         {% if event.cover_image %}
-                            <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
+                        <img src="{{ event.cover_image.url }}" alt="{{ event.name }}">
                         {% else %}
-                            <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
+                        <img src="{% static 'img/default-event-cover.jpg' %}" alt="Default event image">
                         {% endif %}
                     </div>
                     <div class="event-details">
                         <div class="event-name">{{ event.name }}</div>
                         <div class="event-info">{{ event.start_datetime|date:"M d, Y H:i" }}</div>
-                        <div class="event-info">{{ event.location }}</div>
-                        <div class="event-info">{% if event.registration_fee > 0 %}₹{{ event.registration_fee|floatformat:2 }}{% else %}Free{% endif %}</div>
+                        <div class="event-info">{{ event.address }}</div>
+                        <div class="event-info">{% if event.registration_fee > 0 %}₹{{ event.registration_fee }}{% else %}Free{% endif %}</div>
                         <div class="event-actions">
-                            <a href="{% url 'events:event_detail_manage' event.id %}" class="manage-btn">Manage Event</a>
+                            <a href="{% url 'events:event_detail_manage' event.id %}" class="manage-btn">Manage
+                                Event</a>
                         </div>
                     </div>
                 </div>
@@ -160,6 +171,7 @@
                     <a href="{% url 'events:create_event' community.id %}" class="primary-btn">Create New Event</a>
                 </div>
             </div>
+
         </div>
     </section>
     <!-- Event List Section End -->
@@ -175,10 +187,11 @@
                                     alt="EvoCom Logo"></a>
                         </div>
                         <div class="copyright-text">
-                            <p>&copy; <script>
+                            <p>&copy;
+                                <script>
                                     document.write(new Date().getFullYear());
-                                </script> All rights reserved | <a href="#"
-                                    target="_blank">EvoCom</a></p>
+                                </script> All rights reserved | <a href="#" target="_blank">EvoCom</a>
+                            </p>
                         </div>
                         <div class="ft-social">
                             <a href="#"><i class="fa fa-facebook"></i></a>
@@ -202,7 +215,7 @@
     <script src="{% static 'js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#eventTable').DataTable({
                 "pageLength": 10,
                 "lengthChange": false,
